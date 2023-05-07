@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  postgres:
+    hostname: postgres-ep
+    image: postgres:latest
+    env_file:
+      - ./.env
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres:/data/postgres
+  pgadmin:
+    links:
+      - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    env_file:
+      - ./.env
+    ports:
+      - 8080:80
+    volumes:
+      - ./data/pgadmin:/root/.pgadmin
+networks:
+  easy-pack:
