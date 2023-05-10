@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 /**
  * Configuration for the database connection.
  */
-export interface ConfigDBData extends Knex.Config {}
+export type ConfigDBData = Knex.Config;
 
 export interface ConfigAuthData {
   /** The JWKS URI to use. */

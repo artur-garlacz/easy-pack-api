@@ -21,7 +21,6 @@ export class DbModule {
         connection: process.env.DATABASE_URL,
         pool: {
           afterCreate: (conn, done) => {
-            console.log('xd');
             conn.query('SET timezone="UTC";', function (err) {
               if (err) {
                 // first query failed,

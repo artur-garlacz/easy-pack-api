@@ -1,7 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
-import { DbModule } from 'src/shared/infra/db/db.module';
+import { DbModule } from 'src/shared/db/db.module';
 // import { ConfigModule } from 'src/shared/infra/config/config.module';
 
 @Module({
