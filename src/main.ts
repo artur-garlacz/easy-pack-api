@@ -6,8 +6,8 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from 'src/app.module';
-import { createLogger } from 'src/shared/infra/logger';
-import { setupSwagger } from 'src/shared/infra/swagger';
+import { createLogger } from 'src/shared/logger';
+import { setupSwagger } from 'src/shared/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

@@ -1,18 +1,12 @@
-import { DynamicModule, Inject, Logger, Module } from '@nestjs/common';
+import { DynamicModule, Logger, Module } from '@nestjs/common';
 import { KnexModule, KnexModuleOptions } from 'nest-knexjs';
 
-import { ConfigModule } from 'src/shared/infra/config/config.module';
-import { ConfigService } from 'src/shared/infra/config/config.service';
-import knexfile from 'knexfile';
+import { ConfigModule } from 'src/shared/config/config.module';
+import { ConfigService } from 'src/shared/config/config.service';
 
 @Module({})
 export class DbModule {
-  private static getConnectionOptions(
-    config: ConfigService,
-    logger: Logger,
-  ): KnexModuleOptions {
-    const configOptions = knexfile[process.env.NODE_ENV || 'local'];
-
+  private static getConnectionOptions(): KnexModuleOptions {
     return {
       name: process.env.NODE_ENV || 'local',
       config: {
@@ -51,8 +45,7 @@ export class DbModule {
       imports: [
         KnexModule.forRootAsync({
           imports: [ConfigModule],
-          useFactory: (configService: ConfigService, logger: Logger) =>
-            DbModule.getConnectionOptions(configService, logger),
+          useFactory: () => DbModule.getConnectionOptions(),
           inject: [ConfigService],
         }),
       ],
