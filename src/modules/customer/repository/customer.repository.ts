@@ -3,19 +3,28 @@ import { randomUUID } from 'crypto';
 import { Knex } from 'knex';
 import { InjectModel } from 'nest-knexjs';
 import {
-  ICreateUser,
-  IUserRepository,
-} from 'src/modules/user/domain/user.repository';
+  ICreateCustomer,
+  ICustomerRepository,
+} from 'src/modules/customer/domain/customer.repository';
 
 @Injectable()
-export class UserRepository implements IUserRepository {
+export class CustomerRepository implements ICustomerRepository {
   constructor(@InjectModel() private readonly knex: Knex) {}
 
-  async getById(id: string) {
+  async getById() {
     return null;
   }
 
-  async create({ cognitoId, email }: ICreateUser) {
+  async getByCognitoId(id: string) {
+    const customer = this.knex
+      .table('Customer')
+      .select('*')
+      .where('cognitoId', id);
+
+    return customer as any;
+  }
+
+  async create({ cognitoId, email }: ICreateCustomer) {
     const user = this.knex
       .insert({
         id: randomUUID(),

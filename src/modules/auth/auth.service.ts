@@ -3,13 +3,17 @@ import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
 import {
   SignUpCommand,
+  ConfirmSignUpCommand,
   AdminAddUserToGroupCommand,
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
   SignUpCommandOutput,
+  InitiateAuthCommandOutput,
+  ConfirmSignUpCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { ConfigService } from '@nestjs/config';
 import { SignUpError } from 'src/modules/auth/error/sign-up.error';
+import { ConfirmSigningUpError } from 'src/modules/auth/error/confirm-sign-up.error';
 
 @Injectable()
 export class AuthService {
@@ -85,7 +89,27 @@ export class AuthService {
     });
   }
 
-  async loginUser(email: string, password: string): Promise<string> {
+  async confirmUser(
+    email: string,
+    code: string,
+  ): Promise<ConfirmSignUpCommandOutput> {
+    const confirmSignUpCommand = new ConfirmSignUpCommand({
+      ClientId: this.clientId,
+      Username: email,
+      ConfirmationCode: code,
+    });
+
+    try {
+      return await this.cognitoClient.send(confirmSignUpCommand);
+    } catch (err) {
+      new ConfirmSigningUpError(err);
+    }
+  }
+
+  async loginUser(
+    email: string,
+    password: string,
+  ): Promise<InitiateAuthCommandOutput['AuthenticationResult']> {
     const initiateAuthCommand = new InitiateAuthCommand({
       AuthFlow: 'USER_PASSWORD_AUTH',
       ClientId: this.clientId,
@@ -97,9 +121,8 @@ export class AuthService {
 
     try {
       const response = await this.cognitoClient.send(initiateAuthCommand);
-      return response.AuthenticationResult?.AccessToken ?? '';
+      return response.AuthenticationResult;
     } catch (error) {
-      // Handle error
       throw error;
     }
   }

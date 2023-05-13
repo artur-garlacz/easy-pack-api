@@ -11,10 +11,9 @@ export class UserService {
   ) {}
 
   async signUpUser(email: string, password: string) {
-    const [{ UserSub }] = await Promise.all([
-      this.authService.signUpUser(email, password),
-      this.authService.addUserToCustomGroup(email, 'Users'),
-    ]);
+    const { UserSub } = await this.authService.signUpUser(email, password);
+    await this.authService.addUserToCustomGroup(email, 'Users');
+
     this.commandBus.execute(
       new RegisterUserCommand({ email, cognitoId: UserSub }),
     );

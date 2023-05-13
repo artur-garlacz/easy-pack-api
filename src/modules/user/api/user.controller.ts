@@ -13,7 +13,7 @@ import { UserService } from 'src/modules/user/application/user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('/api/user/sign-up')
+  @Post('/api/users/sign-up')
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Endpoint for checking if app is up and running',

@@ -5,7 +5,7 @@ import { UserController } from 'src/modules/user/api/user.controller';
 import { CommandHandlers } from 'src/modules/user/application/commands/handler';
 import { EventHandlers } from 'src/modules/user/application/events/handler';
 import { UserService } from 'src/modules/user/application/user.service';
-import { IUserRepository } from 'src/modules/user/domain/repository/user.repository';
+import { IUserRepository } from 'src/modules/user/domain/user.repository';
 import { UserRepository } from 'src/modules/user/repository/user.repository';
 
 @Module({
