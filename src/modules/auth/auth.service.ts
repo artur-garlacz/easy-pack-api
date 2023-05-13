@@ -6,8 +6,10 @@ import {
   AdminAddUserToGroupCommand,
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
+  SignUpCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { ConfigService } from '@nestjs/config';
+import { SignUpError } from 'src/modules/auth/error/sign-up.error';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +40,10 @@ export class AuthService {
     this.cognitoClient = new CognitoIdentityProviderClient(clientConfig);
   }
 
-  async signUpUser(email: string, password: string): Promise<void> {
+  async signUpUser(
+    email: string,
+    password: string,
+  ): Promise<SignUpCommandOutput> {
     const signUpCommand = new SignUpCommand({
       ClientId: this.clientId,
       Username: email,
@@ -52,11 +57,9 @@ export class AuthService {
     });
 
     try {
-      const w = await this.cognitoClient.send(signUpCommand);
-
-      console.log(w);
+      return await this.cognitoClient.send(signUpCommand);
     } catch (error) {
-      // Handle error
+      new SignUpError();
     }
   }
 

@@ -4,11 +4,11 @@ export class RegisterUserValidator {
   @IsString()
   email: string;
 
-  @IsString()
-  firstName: string;
+  // @IsString()
+  // firstName: string;
 
-  @IsString()
-  lastName: string;
+  // @IsString()
+  // lastName: string;
 
   @IsString()
   cognitoId: string;

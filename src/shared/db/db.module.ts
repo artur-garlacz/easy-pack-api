@@ -22,11 +22,8 @@ export class DbModule {
                 done(err, conn);
               } else {
                 // do the second query...
-                conn.query('SELECT set_limit(0.01);', function (err) {
-                  // if err is not falsy,
-                  //  connection is discarded from pool
-                  // if connection aquire was triggered by a
-                  // query the error is passed to query promise
+                conn.query('select 1+1 as result', function (err) {
+                  console.log('Knex is up and running');
                   done(err, conn);
                 });
               }

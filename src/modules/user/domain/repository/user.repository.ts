@@ -1,8 +1,13 @@
 import { User } from 'src/modules/user/domain/user.entity';
 
-export interface UserRepository {
-  get: (id: string) => Promise<User>;
-  find: (id: string) => Promise<User | null>;
-  add: (user: User) => Promise<void>;
-  save: (user: User) => Promise<User>;
+export const IUserRepository = Symbol('IUserRepository');
+
+export interface ICreateUser {
+  email: string;
+  cognitoId: string;
+}
+
+export interface IUserRepository {
+  getById: (id: string) => Promise<User | null>;
+  create: (user: ICreateUser) => Promise<User>;
 }
