@@ -1,22 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { Knex } from 'knex';
-import { InjectModel } from 'nest-knexjs';
 import {
   ICreateUser,
   IUserRepository,
 } from 'src/modules/user/domain/user.repository';
+import { DatabaseProvider } from 'src/shared/db/db.provider';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(@InjectModel() private readonly knex: Knex) {}
+  constructor(private readonly db: DatabaseProvider) {}
 
   async getById(id: string) {
     return null;
   }
 
   async create({ cognitoId, email }: ICreateUser) {
-    const user = this.knex
+    const user = this.db
+      .getKnexInstance()
       .insert({
         id: randomUUID(),
         email,

@@ -6,11 +6,18 @@ import { UserModule } from 'src/modules/user/user.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { DbModule } from 'src/shared/db/db.module';
 import { CustomerModule } from 'src/modules/customer/customer.module';
+import { KnexModule } from 'nest-knexjs';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    DbModule.forRoot(),
+    // DbModule.forRoot(),
+    // KnexModule.forRoot({
+    //   config: {
+    //     client: 'pg',
+    //     connection: process.env.DATABASE_URL,
+    //   },
+    // }),
     CqrsModule,
     AuthModule,
     UserModule,

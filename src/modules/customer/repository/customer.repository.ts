@@ -1,41 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { Knex } from 'knex';
-import { InjectModel } from 'nest-knexjs';
 import {
   ICreateCustomer,
   ICustomerRepository,
 } from 'src/modules/customer/domain/customer.repository';
+import { DatabaseProvider } from 'src/shared/db/db.provider';
 
 @Injectable()
 export class CustomerRepository implements ICustomerRepository {
-  constructor(@InjectModel() private readonly knex: Knex) {}
+  constructor(private readonly db: DatabaseProvider) {}
 
   async getById() {
     return null;
   }
 
-  async getByCognitoId(id: string) {
-    const customer = this.knex
-      .table('Customer')
-      .select('*')
-      .where('cognitoId', id);
+  async getByEmail(email: string) {
+    try {
+      const customer = await this.db
+        .getKnexInstance()
+        .select()
+        .from('Customer')
+        .where('email', email);
 
-    return customer as any;
+      return customer[0];
+    } catch (e) {
+      throw new Error('Could not register customer');
+    }
   }
 
-  async create({ cognitoId, email }: ICreateCustomer) {
-    const user = this.knex
+  async getByCognitoId(id: string) {
+    const customer = await this.db
+      .getKnexInstance()
+      .select()
+      .from('Customer')
+      .where('cognitoId', id);
+
+    return customer[0] as any;
+  }
+
+  async create({ cognitoId, email, firstName, lastName }: ICreateCustomer) {
+    const customer = this.db
+      .getKnexInstance()
       .insert({
         id: randomUUID(),
         email,
         cognitoId,
-        firstName: 'sd',
-        lastName: 'sd',
-        role: 'COURIER',
+        firstName,
+        lastName,
       })
-      .into('User');
+      .into('Customer');
 
-    return user as any;
+    return customer as any;
   }
 }

@@ -7,6 +7,7 @@ import { EventHandlers } from 'src/modules/user/application/events/handler';
 import { UserService } from 'src/modules/user/application/user.service';
 import { IUserRepository } from 'src/modules/user/domain/user.repository';
 import { UserRepository } from 'src/modules/user/repository/user.repository';
+import { DatabaseProvider } from 'src/shared/db/db.provider';
 
 @Module({
   imports: [CqrsModule],
@@ -18,6 +19,7 @@ import { UserRepository } from 'src/modules/user/repository/user.repository';
       provide: IUserRepository,
       useClass: UserRepository,
     },
+    DatabaseProvider,
     ...CommandHandlers,
     ...EventHandlers,
   ],

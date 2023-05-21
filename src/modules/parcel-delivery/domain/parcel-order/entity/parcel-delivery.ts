@@ -1,7 +1,8 @@
+import { AggregateRoot } from '@nestjs/cqrs';
 import { randomUUID } from 'crypto';
 import { CannotAcceptBookingError } from 'src/modules/parcel-delivery/domain/parcel-order/error/cannot-accept-parcel.error';
 
-export class ParcelDeliveryRequest {
+export class ParcelDelivery extends AggregateRoot {
   private id: string;
   private status: RequestStatus;
   private rejectionReason?: string;

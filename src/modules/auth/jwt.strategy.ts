@@ -39,7 +39,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         payload.sub,
       );
 
-      return { userId: payload.sub, user: customer.id, email: customer.email };
+      if (!customer) {
+        throw new Error('Customer not found');
+      }
+
+      return {
+        cognitoId: payload.sub,
+        userId: customer.id,
+        email: customer.email,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+      };
     }
     return { userId: payload.sub };
   }

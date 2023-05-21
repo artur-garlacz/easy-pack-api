@@ -17,6 +17,7 @@ async function bootstrap() {
       logger: createLogger(),
     },
   );
+
   const configService = app.get(ConfigService);
   const port = configService.get<string>('APP_PORT');
 

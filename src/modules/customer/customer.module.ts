@@ -7,6 +7,7 @@ import { CustomerRepository } from 'src/modules/customer/repository/customer.rep
 import { CustomerController } from 'src/modules/customer/api/customer.controller';
 import { CommandHandlers } from 'src/modules/customer/application/commands/handler';
 import { EventHandlers } from 'src/modules/customer/application/events/handler';
+import { DatabaseProvider } from 'src/shared/db/db.provider';
 
 @Module({
   imports: [CqrsModule],
@@ -18,6 +19,7 @@ import { EventHandlers } from 'src/modules/customer/application/events/handler';
       provide: ICustomerRepository,
       useClass: CustomerRepository,
     },
+    DatabaseProvider,
     ...CommandHandlers,
     ...EventHandlers,
   ],

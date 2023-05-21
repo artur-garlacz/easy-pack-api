@@ -1,5 +1,5 @@
-import { RegisterCustomerValidator } from 'src/modules/customer/application/validators/register-customer.validator';
+import { type RegisterCustomerCommandValidator } from 'src/modules/customer/application/commands/schemas';
 
 export class RegisterCustomerCommand {
-  constructor(public readonly payload: RegisterCustomerValidator) {}
+  constructor(public readonly payload: RegisterCustomerCommandValidator) {}
 }

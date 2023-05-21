@@ -6,7 +6,7 @@ export class ParcelDeliveryRequestController {
   @Post('/api/parcel-delivery-requests')
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Endpoint for checking if app is up and running',
+    description: 'Endpoint for creating parcel delivery requests',
   })
   createParcelDeliveryRequest(): string {
     return 'Ok';

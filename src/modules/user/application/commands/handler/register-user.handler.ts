@@ -19,9 +19,8 @@ export class RegisterUserHandler
   ) {}
 
   async execute({ payload }: RegisterUserCommand) {
-    console.log('RegisterUserHandler.command', payload);
-    const user = await this.userRepository.create({ ...payload });
-    console.log('RegisterUserHandler.user', user);
+    await this.userRepository.create({ ...payload });
+
     this.eventBus.publish(
       new UserRegisteredEvent({
         cognitoId: payload.cognitoId,
