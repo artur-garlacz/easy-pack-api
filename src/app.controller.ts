@@ -3,8 +3,6 @@ import { ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  constructor() {}
-
   @Get('/health')
   @ApiResponse({
     status: HttpStatus.OK,

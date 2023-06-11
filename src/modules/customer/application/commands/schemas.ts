@@ -1,14 +1,15 @@
-import { z } from 'zod';
+import { IsEmail, IsString } from 'class-validator';
 
-export const registerCustomerCommand = z
-  .object({
-    email: z.string().min(3).max(255),
-    cognitoId: z.string().min(3),
-    firstName: z.string().min(3).max(255),
-    lastName: z.string().min(3).max(255),
-  })
-  .required();
+export class RegisterCustomerCommandValidator {
+  @IsEmail()
+  email: string;
 
-export type RegisterCustomerCommandValidator = z.infer<
-  typeof registerCustomerCommand
->;
+  @IsString()
+  cognitoId: string;
+
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+}

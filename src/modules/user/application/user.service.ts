@@ -15,7 +15,7 @@ export class UserService {
     await this.authService.addUserToCustomGroup(email, 'Users');
 
     this.commandBus.execute(
-      new RegisterUserCommand({ email, cognitoId: UserSub }),
+      new RegisterUserCommand({ email, cognitoId: UserSub! }),
     );
   }
 }

@@ -8,6 +8,10 @@ export class ParcelDelivery extends AggregateRoot {
   private rejectionReason?: string;
   private createdAt?: Date;
 
+  constructor(public readonly parcelOrderId: string) {
+    super();
+  }
+
   accept() {
     this.id = randomUUID();
     this.changeStatus(RequestStatus.Accepted);
