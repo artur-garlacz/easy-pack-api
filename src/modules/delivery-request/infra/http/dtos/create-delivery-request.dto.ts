@@ -32,7 +32,7 @@ class PackageDto {
   height: number;
 
   @IsString()
-  descirption: string;
+  description: string;
 }
 
 class AddressDto {
@@ -77,7 +77,7 @@ export class CreateDeliveryRequestDto {
   type: PackageType;
 
   @IsString()
-  descirption: string;
+  description: string;
 
   @IsString()
   shipmentAt: Date | string;

@@ -26,7 +26,7 @@ export class CreateDeliveryRequestHandler
       packages,
       pickUpAddress,
       type,
-      descirption,
+      description,
       shipmentAt,
     },
   }: CreateDeliveryRequestCommand) {
@@ -45,17 +45,16 @@ export class CreateDeliveryRequestHandler
         new DeliveryRequestAddress(randomUUID(), deliveryAddress),
       );
 
-    const deliveryRequest =
-      await this.deliveryRequestRepository.createDeliveryRequest(
-        new DeliveryRequest(
-          randomUUID(),
-          pickUp,
-          delivery,
-          type,
-          descirption,
-          shipmentAt,
-        ),
-      );
+    const deliveryRequest = new DeliveryRequest();
+    deliveryRequest.create({
+      pickUp,
+      destination: delivery,
+      type,
+      description,
+      shipmentAt,
+    });
+
+    await this.deliveryRequestRepository.createDeliveryRequest(deliveryRequest);
 
     for (const item of packages) {
       await this.deliveryRequestRepository.createPackage(
@@ -66,7 +65,7 @@ export class CreateDeliveryRequestHandler
           item.length,
           item.width,
           item.height,
-          item.descirption,
+          item.description,
           deliveryRequest.id,
         ),
       );

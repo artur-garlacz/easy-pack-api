@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { IDeliveryRequestRepository } from 'src/modules/delivery-request/domain/delivery-request.repository';
+import {
+  IDeliveryRequestRepository,
+  UpdateDeliveryRequest,
+} from 'src/modules/delivery-request/domain/delivery-request.repository';
 import { DeliveryRequestAddress } from 'src/modules/delivery-request/domain/entity/address';
 import {
   DeliveryRequest,
@@ -11,6 +14,16 @@ import { DatabaseProvider } from 'src/shared/db/db.provider';
 @Injectable()
 export class DeliveryRequestRepository implements IDeliveryRequestRepository {
   constructor(private readonly db: DatabaseProvider) {}
+
+  async getById(id: string) {
+    const [deliveryRequest] = await this.db
+      .getKnexInstance()
+      .select('*')
+      .from('DeliveryRequest')
+      .where('id', id);
+
+    return deliveryRequest;
+  }
 
   async getAll(): Promise<DeliveryRequest[]> {
     const deliveryRequests = await this.db
@@ -44,6 +57,17 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
         status: DeliveryRequestStatus.CREATED,
       })
       .into('DeliveryRequest')
+      .returning('*');
+
+    return deliveryRequest as DeliveryRequest;
+  }
+
+  async updateDeliveryRequestStatus({ id, status }: UpdateDeliveryRequest) {
+    const [deliveryRequest] = await this.db
+      .getKnexInstance()
+      .update({ status })
+      .where('id', id)
+      .from('DeliveryRequest')
       .returning('*');
 
     return deliveryRequest as DeliveryRequest;
