@@ -81,4 +81,7 @@ export class CreateDeliveryRequestCommandValidator {
 
   @IsString()
   shipmentAt: Date | string;
+
+  @IsString()
+  customerId: string;
 }

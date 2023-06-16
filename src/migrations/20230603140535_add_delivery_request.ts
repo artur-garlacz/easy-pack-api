@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('phoneNumber', 255).notNullable();
     table.string('firstName', 255).notNullable();
     table.string('lastName', 255).notNullable();
-    table.timestamps(true, true);
+    table.timestamps(true, true, true);
   });
 
   await knex.schema.createTable('DeliveryRequest', (table) => {
@@ -29,11 +29,17 @@ export async function up(knex: Knex): Promise<void> {
       .uuid('orderingPartyDetailsId')
       .references('id')
       .inTable('DeliveryRequestAddress');
+    table
+      .uuid('customerId')
+      .references('id')
+      .inTable('Customer')
+      .onDelete('CASCADE')
+      .index();
     table.string('description');
     table.enum('type', ['ENVELOPE', 'BOX', 'OTHER']);
     table.enum('status', ['CREATED', 'ACCEPTED', 'REJECTED']);
     table.dateTime('shipmentAt');
-    table.timestamps(true, true);
+    table.timestamps(true, true, true);
   });
 
   await knex.schema.createTable('Package', (table) => {
@@ -45,7 +51,7 @@ export async function up(knex: Knex): Promise<void> {
     table.float('height');
     table.string('description');
     table.uuid('deliveryRequestId').references('id').inTable('DeliveryRequest');
-    table.timestamps(true, true);
+    table.timestamps(true, true, true);
   });
 }
 

@@ -16,7 +16,7 @@ export class UpdateDeliveryRequestStatusHandler
   ) {}
 
   async execute({
-    payload: { id, status },
+    payload: { id, userId, status },
   }: UpdateDeliveryRequestStatusCommand) {
     const deliveryRequest = await this.deliveryRequestRepository.getById(id);
 
@@ -30,7 +30,9 @@ export class UpdateDeliveryRequestStatusHandler
     });
 
     if (status === DeliveryRequestStatus.ACCEPTED) {
-      this.eventBus.publish(new DeliveryRequestAcceptedEvent());
+      this.eventBus.publish(
+        new DeliveryRequestAcceptedEvent({ deliveryRequestId: id, userId }),
+      );
     } else {
     }
   }

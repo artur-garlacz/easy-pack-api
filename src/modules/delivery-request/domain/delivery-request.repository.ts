@@ -7,9 +7,14 @@ import { Package } from 'src/modules/delivery-request/domain/entity/package';
 
 export const IDeliveryRequestRepository = Symbol('IDeliveryRequestRepository');
 
-export type UpdateDeliveryRequest = {
+export type IUpdateDeliveryRequestArgs = {
   id: string;
   status: DeliveryRequestStatus;
+};
+
+export type IGetDeliveryRequestsArgs = {
+  customerId?: string;
+  status?: DeliveryRequestStatus;
 };
 
 export interface IDeliveryRequestRepository {
@@ -18,10 +23,10 @@ export interface IDeliveryRequestRepository {
   ) => Promise<DeliveryRequestAddress>;
   createDeliveryRequest: (request: DeliveryRequest) => Promise<DeliveryRequest>;
   createPackage: (request: Package) => Promise<Package>;
-  getAll: () => Promise<DeliveryRequest[]>;
+  getAll: (args?: IGetDeliveryRequestsArgs) => Promise<DeliveryRequest[]>;
   getById: (id: string) => Promise<DeliveryRequest>;
   getByCustomerId: (id: string) => Promise<DeliveryRequest>;
   updateDeliveryRequestStatus: (
-    args: UpdateDeliveryRequest,
+    args: IUpdateDeliveryRequestArgs,
   ) => Promise<DeliveryRequest>;
 }

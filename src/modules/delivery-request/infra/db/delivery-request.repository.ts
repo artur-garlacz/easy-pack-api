@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
   IDeliveryRequestRepository,
-  UpdateDeliveryRequest,
+  IGetDeliveryRequestsArgs,
+  IUpdateDeliveryRequestArgs,
 } from 'src/modules/delivery-request/domain/delivery-request.repository';
 import { DeliveryRequestAddress } from 'src/modules/delivery-request/domain/entity/address';
 import {
@@ -10,6 +11,7 @@ import {
 } from 'src/modules/delivery-request/domain/entity/delivery-request';
 import { Package } from 'src/modules/delivery-request/domain/entity/package';
 import { DatabaseProvider } from 'src/shared/db/db.provider';
+import { removeEmptyProperties } from 'src/shared/utils/object';
 
 @Injectable()
 export class DeliveryRequestRepository implements IDeliveryRequestRepository {
@@ -25,10 +27,20 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
     return deliveryRequest;
   }
 
-  async getAll(): Promise<DeliveryRequest[]> {
+  async getAll(args?: IGetDeliveryRequestsArgs): Promise<DeliveryRequest[]> {
+    const conditions = removeEmptyProperties(args || {});
     const deliveryRequests = await this.db
       .getKnexInstance()
-      .select('*')
+      .select([
+        'id',
+        'customerId',
+        'description',
+        'type',
+        'status',
+        'shipmentAt',
+        'createdAt',
+      ])
+      .where(conditions)
       .from('DeliveryRequest');
 
     return deliveryRequests as DeliveryRequest[];
@@ -43,6 +55,7 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
     description,
     type,
     shipmentAt,
+    customerId,
   }: DeliveryRequest) {
     const [deliveryRequest] = await this.db
       .getKnexInstance()
@@ -54,6 +67,7 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
         description,
         type,
         shipmentAt,
+        customerId,
         status: DeliveryRequestStatus.CREATED,
       })
       .into('DeliveryRequest')
@@ -62,7 +76,10 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
     return deliveryRequest as DeliveryRequest;
   }
 
-  async updateDeliveryRequestStatus({ id, status }: UpdateDeliveryRequest) {
+  async updateDeliveryRequestStatus({
+    id,
+    status,
+  }: IUpdateDeliveryRequestArgs) {
     const [deliveryRequest] = await this.db
       .getKnexInstance()
       .update({ status })

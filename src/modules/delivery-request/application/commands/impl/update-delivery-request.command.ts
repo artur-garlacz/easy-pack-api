@@ -10,6 +10,10 @@ export class UpdateDeliveryRequestStatusCommand {
 export class UpdateDeliveryRequestStatusCommandValidator {
   @IsString()
   id: string;
+
+  @IsString()
+  userId: string;
+
   @IsString()
   status: DeliveryRequestStatus.ACCEPTED | DeliveryRequestStatus.REJECTED;
 }

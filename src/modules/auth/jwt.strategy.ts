@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ICustomerRepository } from 'src/modules/customer/domain/customer.repository';
+import { IUserRepository } from 'src/modules/user/domain/user.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -11,6 +12,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly configService: ConfigService,
     @Inject(ICustomerRepository)
     private readonly customerRepository: ICustomerRepository,
+    @Inject(IUserRepository)
+    private readonly userRepository: IUserRepository,
   ) {
     super({
       secretOrKeyProvider: passportJwtSecret({
@@ -33,7 +36,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log(payload['cognito:groups'].includes('Customers'));
     if (payload['cognito:groups'].includes('Customers')) {
       const customer = await this.customerRepository.getByCognitoId(
         payload.sub,
@@ -51,6 +53,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         lastName: customer.lastName,
       };
     }
-    return { userId: payload.sub };
+
+    const user = await this.userRepository.getByCognitoId(payload.sub);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return {
+      cognitoId: payload.sub,
+      userId: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
   }
 }

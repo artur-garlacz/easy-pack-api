@@ -14,15 +14,25 @@ export class UserRepository implements IUserRepository {
     return null;
   }
 
-  async create({ cognitoId, email }: ICreateUser) {
+  async getByCognitoId(id: string) {
+    const [user] = await this.db
+      .getKnexInstance()
+      .select()
+      .from('User')
+      .where('cognitoId', id);
+
+    return user as any;
+  }
+
+  async create({ cognitoId, email, firstName, lastName }: ICreateUser) {
     const user = this.db
       .getKnexInstance()
       .insert({
         id: randomUUID(),
         email,
         cognitoId,
-        firstName: 'sd',
-        lastName: 'sd',
+        firstName,
+        lastName,
         role: 'COURIER',
       })
       .into('User');

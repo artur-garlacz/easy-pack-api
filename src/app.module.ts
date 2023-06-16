@@ -9,6 +9,8 @@ import { CustomerModule } from 'src/modules/customer/customer.module';
 import { KnexModule } from 'nest-knexjs';
 import { DeliveryRequestModule } from 'src/modules/delivery-request/delivery-request.module';
 import { AllExceptionsFilter } from 'src/shared/filters/all-excpetions.filter';
+import { ParcelDeliveryModule } from 'src/modules/parcel-delivery/parcel-delivery.module';
+import { EventStoreModule } from 'src/shared/event-store/event-store.module';
 
 @Module({
   imports: [
@@ -20,11 +22,13 @@ import { AllExceptionsFilter } from 'src/shared/filters/all-excpetions.filter';
         connection: process.env.DATABASE_URL,
       },
     }),
+    // EventStoreModule,
     CqrsModule,
     AuthModule,
     UserModule,
     CustomerModule,
     DeliveryRequestModule,
+    ParcelDeliveryModule,
   ],
   controllers: [AppController],
   providers: [Logger, AllExceptionsFilter],

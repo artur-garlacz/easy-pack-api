@@ -1,4 +1,4 @@
-import { DynamicModule, Logger, Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { KnexModule, KnexModuleOptions } from 'nest-knexjs';
 
 import { ConfigModule } from 'src/shared/config/config.module';

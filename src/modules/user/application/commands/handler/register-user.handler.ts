@@ -1,9 +1,4 @@
-import {
-  CommandHandler,
-  EventBus,
-  EventPublisher,
-  ICommandHandler,
-} from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterUserCommand } from '../impl/register-user.command';
 import { IUserRepository } from 'src/modules/user/domain/user.repository';
 import { Inject } from '@nestjs/common';
@@ -25,6 +20,8 @@ export class RegisterUserHandler
       new UserRegisteredEvent({
         cognitoId: payload.cognitoId,
         email: payload.email,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
       }),
     );
   }

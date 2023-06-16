@@ -27,10 +27,8 @@ export class CustomerController {
   @UseGuards(CustomerAuthGuard)
   async getMe(@Request() req: any) {
     try {
-      console.log(req.user);
       return req.user;
     } catch (e) {
-      console.log(e);
       throw new BadRequestException(e.message);
     }
   }
@@ -42,10 +40,8 @@ export class CustomerController {
   })
   async signUpCustomer(@Body() data: RegisterCustomerDto) {
     try {
-      console.log(data);
       return await this.customerService.signUp(data);
     } catch (e) {
-      console.log(e.message);
       throw new BadRequestException(e.message);
     }
   }

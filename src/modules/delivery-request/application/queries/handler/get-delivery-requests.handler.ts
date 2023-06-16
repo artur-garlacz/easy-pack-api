@@ -12,7 +12,7 @@ export class GetDeliveryRequestsHandler
     private readonly deliveryRequestRepository: IDeliveryRequestRepository,
   ) {}
 
-  execute(query: GetDeliveryRequestsQuery) {
-    return this.deliveryRequestRepository.getAll();
+  execute({ filters }: GetDeliveryRequestsQuery) {
+    return this.deliveryRequestRepository.getAll({ ...filters });
   }
 }

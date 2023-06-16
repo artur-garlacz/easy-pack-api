@@ -11,6 +11,7 @@ export class DatabaseProvider {
     const environment = process.env.NODE_ENV || 'local';
     const config = knexConfig[environment];
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     this.knex = require('knex')(config);
   }
 

@@ -6,6 +6,8 @@ import { JwtStrategy } from 'src/modules/auth/jwt.strategy';
 import { ICustomerRepository } from 'src/modules/customer/domain/customer.repository';
 import { CustomerRepository } from 'src/modules/customer/repository/customer.repository';
 import { DatabaseProvider } from 'src/shared/db/db.provider';
+import { IUserRepository } from 'src/modules/user/domain/user.repository';
+import { UserRepository } from 'src/modules/user/repository/user.repository';
 
 @Module({
   imports: [PassportModule, JwtModule.register({})],
@@ -16,6 +18,10 @@ import { DatabaseProvider } from 'src/shared/db/db.provider';
     {
       provide: ICustomerRepository,
       useClass: CustomerRepository,
+    },
+    {
+      provide: IUserRepository,
+      useClass: UserRepository,
     },
   ],
   exports: [AuthService],

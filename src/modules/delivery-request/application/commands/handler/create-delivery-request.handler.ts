@@ -28,9 +28,9 @@ export class CreateDeliveryRequestHandler
       type,
       description,
       shipmentAt,
+      customerId,
     },
   }: CreateDeliveryRequestCommand) {
-    console.log(deliveryAddress, packages, pickUpAddress);
     if (!packages.length) {
       throw new Error('Packages are required');
     }
@@ -52,6 +52,7 @@ export class CreateDeliveryRequestHandler
       type,
       description,
       shipmentAt,
+      customerId,
     });
 
     await this.deliveryRequestRepository.createDeliveryRequest(deliveryRequest);
@@ -69,8 +70,6 @@ export class CreateDeliveryRequestHandler
           deliveryRequest.id,
         ),
       );
-
-      // deliveryRequest.addPackage(packageItem);
     }
 
     this.publisher.mergeObjectContext(deliveryRequest);
