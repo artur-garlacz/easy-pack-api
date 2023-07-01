@@ -23,7 +23,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<string>('APP_PORT');
   const allExceptionsFilter = app.get(AllExceptionsFilter);
-
+  console.log(__dirname);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(allExceptionsFilter);
   setupSwagger(app);

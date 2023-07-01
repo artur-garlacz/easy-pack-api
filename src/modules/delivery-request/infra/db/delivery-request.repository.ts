@@ -27,21 +27,40 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
     return deliveryRequest;
   }
 
-  async getAll(args?: IGetDeliveryRequestsArgs): Promise<DeliveryRequest[]> {
-    const conditions = removeEmptyProperties(args || {});
-    const deliveryRequests = await this.db
-      .getKnexInstance()
+  async getAllRequests(
+    args?: Pick<IGetDeliveryRequestsArgs, 'status'>,
+  ): Promise<DeliveryRequest[]> {
+    const condition = removeEmptyProperties(args);
+    const deliveryRequests = await this.db.knex
+      .select('*')
+      .from('DeliveryRequest')
+      .where(condition);
+
+    return deliveryRequests as DeliveryRequest[];
+  }
+
+  async getCustomerRequests(
+    args?: IGetDeliveryRequestsArgs,
+  ): Promise<DeliveryRequest[]> {
+    const deliveryRequests = await this.db.knex
       .select([
-        'id',
-        'customerId',
+        'DeliveryRequest.id',
+        'DeliveryRequest.customerId',
         'description',
         'type',
-        'status',
+        'DeliveryRequest.status',
+        'ParcelDelivery.status as parcelStatus',
         'shipmentAt',
-        'createdAt',
+        'DeliveryRequest.createdAt',
+        'ParcelDelivery.trackingNumber',
       ])
-      .where(conditions)
-      .from('DeliveryRequest');
+      .from('DeliveryRequest')
+      .leftJoin(
+        'ParcelDelivery',
+        'ParcelDelivery.deliveryRequestId',
+        'DeliveryRequest.id',
+      )
+      .orWhere('DeliveryRequest.customerId', args.customerId || null);
 
     return deliveryRequests as DeliveryRequest[];
   }

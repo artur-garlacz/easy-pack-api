@@ -5,7 +5,7 @@ import knexConfig from 'knexfile';
 
 @Injectable()
 export class DatabaseProvider {
-  private readonly knex: Knex;
+  knex: Knex;
 
   constructor() {
     const environment = process.env.NODE_ENV || 'local';

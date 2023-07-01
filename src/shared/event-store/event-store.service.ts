@@ -1,6 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseProvider } from 'src/shared/db/db.provider';
-import { IEvent, mapEventStoreTable } from 'src/shared/events/events';
+import {
+  ENTITY_TYPE,
+  IEvent,
+  mapEventStoreTable,
+} from 'src/shared/events/events';
 
 @Injectable()
 export class EventStoreService {
@@ -10,7 +14,6 @@ export class EventStoreService {
 
   async storeEvent(event: IEvent) {
     const tableName = mapEventStoreTable(event.entityType);
-    console.log('event', event);
     await this.db
       .getKnexInstance()
       .withSchema(this.schemaName)
@@ -20,5 +23,21 @@ export class EventStoreService {
       .into(tableName);
 
     this.logger.log(`Event stored: ${event.constructor.name}`);
+  }
+
+  async getEvents({
+    entityType,
+    entityId,
+  }: {
+    entityType: ENTITY_TYPE;
+    entityId: string;
+  }): Promise<Array<IEvent & { createdAt: string }>> {
+    const tableName = mapEventStoreTable(entityType);
+    return await this.db
+      .getKnexInstance()
+      .withSchema(this.schemaName)
+      .select('*')
+      .where({ entityId })
+      .from(tableName);
   }
 }

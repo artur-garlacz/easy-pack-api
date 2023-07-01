@@ -27,7 +27,6 @@ export class UserDeliveryRequestController {
     description: 'Endpoint for getting parcel delivery requests',
   })
   getDeliveryRequests(@Query('status') status: DeliveryRequestStatus) {
-    console.log(status);
     return this.queryBus.execute(new GetDeliveryRequestsQuery({ status }));
   }
 
@@ -37,20 +36,20 @@ export class UserDeliveryRequestController {
     description: 'Endpoint for updating parcel delivery request status',
   })
   @UseGuards(UserAuthGuard)
-  updateDeliveryRequestStatus(
+  async updateDeliveryRequestStatus(
     @Request() req: any,
     @Param('id') id: string,
     @Body()
     { status }: UpdateDeliveryRequestStatusDto,
   ) {
-    console.log(req.user);
-
-    return this.commandBus.execute(
+    await this.commandBus.execute(
       new UpdateDeliveryRequestStatusCommand({
         id,
         status,
-        userId: req.user.id,
+        userId: req.user.userId,
       }),
     );
+
+    return { message: 'Successfully updated request status' };
   }
 }

@@ -2,45 +2,67 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { randomUUID } from 'crypto';
 import { CourierAssignedToParcelEvent } from 'src/modules/parcel-delivery/application/events/impl/courier-assigned-to-parcel.event';
 import { ParcelDeliveryCreatedEvent } from 'src/modules/parcel-delivery/application/events/impl/parcel-delivery-created.event';
+import { ParcelDeliveryStatusUpdatedEvent } from 'src/modules/parcel-delivery/application/events/impl/parcel-delivery-status-updated.event';
 import { ENTITY_TYPE, EVENT_TYPE } from 'src/shared/events/events';
 
 export class ParcelDelivery extends AggregateRoot {
-  private _id: string;
-  private _deliveryRequestId: string;
-  private _userId: string;
-  private _trackingNumber: string;
-  private _status: ParcelDeliveryStatus;
+  public id: string;
+  public deliveryRequestId: string;
+  public userId: string;
+  public trackingNumber: string;
+  public status: ParcelDeliveryStatus;
 
   create({ deliveryRequestId }: { deliveryRequestId: string }) {
-    this._id = randomUUID();
-    this._deliveryRequestId = deliveryRequestId;
-    this._trackingNumber = this.generateTrackingNumber();
+    this.id = randomUUID();
+    this.deliveryRequestId = deliveryRequestId;
+    this.trackingNumber = this.generateTrackingNumber();
 
     this.apply(
       new ParcelDeliveryCreatedEvent(
         '1.0.0',
-        this._id,
+        this.id,
         EVENT_TYPE.PARCEL_CREATED,
         ENTITY_TYPE.PARCEL_DELIVERY,
         {
           deliveryRequestId,
-          trackingNumber: this._trackingNumber,
+          trackingNumber: this.trackingNumber,
         },
       ),
     );
   }
 
   assignCourierToParcel({ userId }: { userId: string }) {
-    this._userId = userId;
+    this.userId = userId;
 
     this.apply(
       new CourierAssignedToParcelEvent(
         '1.0.0',
-        this._id,
+        this.id,
         EVENT_TYPE.COURIER_ASSIGNED_TO_PARCEL,
         ENTITY_TYPE.PARCEL_DELIVERY,
         {
           userId,
+        },
+      ),
+    );
+  }
+
+  updateStatus({
+    userId,
+    status,
+  }: {
+    userId: string;
+    status: ParcelDeliveryStatus;
+  }) {
+    this.apply(
+      new ParcelDeliveryStatusUpdatedEvent(
+        '1.0.0',
+        this.id,
+        EVENT_TYPE.PARCEL_STATUS_UPDATED,
+        ENTITY_TYPE.PARCEL_DELIVERY,
+        {
+          userId,
+          status,
         },
       ),
     );
@@ -61,4 +83,9 @@ export class ParcelDelivery extends AggregateRoot {
 
 export enum ParcelDeliveryStatus {
   CREATED = 'CREATED',
+  PENDING = 'PENDING',
+  IN_TRANSIT = 'IN_TRANSIT',
+  DELIVERED = 'DELIVERED',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
 }

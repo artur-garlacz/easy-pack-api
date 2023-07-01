@@ -13,6 +13,11 @@ export class GetDeliveryRequestsHandler
   ) {}
 
   execute({ filters }: GetDeliveryRequestsQuery) {
-    return this.deliveryRequestRepository.getAll({ ...filters });
+    if (filters.customerId) {
+      return this.deliveryRequestRepository.getCustomerRequests({ ...filters });
+    }
+    return this.deliveryRequestRepository.getAllRequests({
+      status: filters.status,
+    });
   }
 }

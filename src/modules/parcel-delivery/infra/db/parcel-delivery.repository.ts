@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ParcelDeliveryStatus } from 'src/modules/parcel-delivery/domain/parcel-delivery';
 import {
   ICreateParcelDeliveryArgs,
+  IGetParcelDeliveryArgs,
   IParcelDeliveryRepository,
   IUpdateParcelDeliveryArgs,
 } from 'src/modules/parcel-delivery/domain/parcel-delivery.repository';
@@ -11,6 +12,65 @@ import { removeEmptyProperties } from 'src/shared/utils/object';
 @Injectable()
 export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
   constructor(private readonly db: DatabaseProvider) {}
+
+  async getParcelDelivery(id: string) {
+    const [parcelDelivery] = await this.db
+      .getKnexInstance()
+      .select('*')
+      .from('ParcelDelivery')
+      .where({ id });
+
+    return parcelDelivery || null;
+  }
+
+  async getAllParcelDeliveries(args?: { userId?: string }) {
+    const conditions = removeEmptyProperties(args || {});
+
+    const parcelDeliveries = await this.db
+      .getKnexInstance()
+      .select('*')
+      .from('ParcelDelivery')
+      .where(conditions);
+
+    return parcelDeliveries;
+  }
+
+  async getParcelDeliveryDetails(args: IGetParcelDeliveryArgs) {
+    // const conditions = removeEmptyProperties(args || {});
+
+    const [parcelDelivery] = await this.db
+      .getKnexInstance()
+      .select([
+        'ParcelDelivery.*',
+        this.db.getKnexInstance().raw('row_to_json("sd".*) as "senderDetails"'),
+        this.db
+          .getKnexInstance()
+          .raw('row_to_json("rd".*) as "recipientDetails"'),
+      ])
+      .from('ParcelDelivery')
+      .leftJoin(
+        'DeliveryRequest',
+        'ParcelDelivery.deliveryRequestId',
+        'DeliveryRequest.id',
+      )
+      .leftJoin(
+        {
+          sd: 'DeliveryRequestAddress',
+        },
+        'DeliveryRequest.senderDetailsId',
+        'sd.id',
+      )
+      .leftJoin(
+        {
+          rd: 'DeliveryRequestAddress',
+        },
+        'DeliveryRequest.recipientDetailsId',
+        'rd.id',
+      )
+      .where('ParcelDelivery.trackingNumber', args.trackingNumber);
+
+    return parcelDelivery;
+  }
 
   async createParcelDelivery({
     id,
@@ -33,7 +93,7 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
     return parcelDelivery;
   }
 
-  async updateParcelDelivery(args: IUpdateParcelDeliveryArgs) {
+  async updateParcelDelivery({ id, ...args }: IUpdateParcelDeliveryArgs) {
     const conditions = removeEmptyProperties(args || {});
 
     const [parcelDelivery] = await this.db
@@ -41,6 +101,7 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
       .update({
         ...conditions,
       })
+      .where({ id })
       .from('ParcelDelivery')
       .returning('*');
 

@@ -11,7 +11,8 @@ export default {
   },
   local: {
     client: 'pg',
-    connection: process.env.DATABASE_URL,
+    connection:
+      'postgresql://admin:admin@localhost:5432/easypack?schema=public&connect_timeout=500',
     migrations: {
       directory: 'src/migrations',
     },

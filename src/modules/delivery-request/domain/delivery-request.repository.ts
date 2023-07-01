@@ -23,7 +23,12 @@ export interface IDeliveryRequestRepository {
   ) => Promise<DeliveryRequestAddress>;
   createDeliveryRequest: (request: DeliveryRequest) => Promise<DeliveryRequest>;
   createPackage: (request: Package) => Promise<Package>;
-  getAll: (args?: IGetDeliveryRequestsArgs) => Promise<DeliveryRequest[]>;
+  getCustomerRequests: (
+    args?: IGetDeliveryRequestsArgs,
+  ) => Promise<DeliveryRequest[]>;
+  getAllRequests: (
+    args?: Pick<IGetDeliveryRequestsArgs, 'status'>,
+  ) => Promise<DeliveryRequest[]>;
   getById: (id: string) => Promise<DeliveryRequest>;
   getByCustomerId: (id: string) => Promise<DeliveryRequest>;
   updateDeliveryRequestStatus: (

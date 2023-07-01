@@ -46,7 +46,6 @@ export class CustomerDeliveryRequestController {
   })
   @UseGuards(CustomerAuthGuard)
   getDeliveryRequests(@Request() req: any) {
-    console.log(req.user);
     return this.queryBus.execute(
       new GetDeliveryRequestsQuery({ customerId: req.user.userId }),
     );
