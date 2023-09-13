@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/modules/auth/auth.guard';
-import { LoginUserDto } from 'src/modules/user/api/dtos/login-user.dto';
-import { RegisterUserDto } from 'src/modules/user/api/dtos/register-user.dto';
+import { LoginUserDto } from 'src/modules/user/infra/api/dtos/login-user.dto';
+import { RegisterUserDto } from 'src/modules/user/infra/api/dtos/register-user.dto';
 import { UserService } from 'src/modules/user/application/user.service';
 
 @Controller()
@@ -21,7 +21,7 @@ export class UserController {
   @Post('/api/users/sign-up')
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Endpoint',
+    description: 'Endpoint for registration users (OWNER)',
   })
   async signUpUser(@Body() data: RegisterUserDto) {
     try {

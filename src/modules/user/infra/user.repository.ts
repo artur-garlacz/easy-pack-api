@@ -11,20 +11,26 @@ export class UserRepository implements IUserRepository {
   constructor(private readonly db: DatabaseProvider) {}
 
   async getById(id: string) {
-    return null;
-  }
-
-  async getByCognitoId(id: string) {
     const [user] = await this.db
       .getKnexInstance()
       .select()
       .from('User')
-      .where('cognitoId', id);
+      .where('id', id);
 
-    return user as any;
+    return user;
   }
 
-  async create({ cognitoId, email, firstName, lastName }: ICreateUser) {
+  async getByCognitoId(cognitoId: string) {
+    const [user] = await this.db
+      .getKnexInstance()
+      .select()
+      .from('User')
+      .where('cognitoId', cognitoId);
+
+    return user;
+  }
+
+  async create({ cognitoId, email, firstName, lastName, role }: ICreateUser) {
     const user = this.db
       .getKnexInstance()
       .insert({
@@ -33,7 +39,7 @@ export class UserRepository implements IUserRepository {
         cognitoId,
         firstName,
         lastName,
-        role: 'COURIER',
+        role,
       })
       .into('User');
 

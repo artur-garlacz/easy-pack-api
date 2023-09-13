@@ -4,8 +4,6 @@ import { MailerService } from 'src/shared/mailer/mailer.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly mailerService: MailerService) {}
-
   @Get('/health')
   @ApiResponse({
     status: HttpStatus.OK,

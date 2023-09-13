@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { Inject, Injectable } from '@nestjs/common';
 import { AuthService } from 'src/modules/auth/auth.service';
-import { LoginUserDto } from 'src/modules/user/api/dtos/login-user.dto';
-import { RegisterUserDto } from 'src/modules/user/api/dtos/register-user.dto';
-import { RegisterUserCommand } from 'src/modules/user/application/commands/impl/register-user.command';
+import { LoginUserDto } from 'src/modules/user/infra/api/dtos/login-user.dto';
+import { RegisterUserDto } from 'src/modules/user/infra/api/dtos/register-user.dto';
+import { USER_ROLE } from 'src/modules/user/domain/user.entity';
+import { IUserRepository } from 'src/modules/user/domain/user.repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    private readonly commandBus: CommandBus,
+    @Inject(IUserRepository) private readonly userRepository: IUserRepository,
     private readonly authService: AuthService,
   ) {}
 
@@ -16,15 +16,24 @@ export class UserService {
     const { UserSub } = await this.authService.signUpUser(email, password);
     await this.authService.addUserToCustomGroup(email, 'Users');
 
-    this.commandBus.execute(
-      new RegisterUserCommand({
-        email,
-        cognitoId: UserSub,
-        firstName,
-        lastName,
-      }),
-    );
+    await this.userRepository.create({
+      cognitoId: UserSub,
+      email,
+      firstName,
+      lastName,
+      role: USER_ROLE.OWNER,
+    });
   }
+
+  // async createEmployee({ email, firstName, lastName, password }: ){
+  //   await this.userRepository.create({
+  //     cognitoId: UserSub,
+  //     email,
+  //     firstName,
+  //     lastName,
+  //     role: USER_ROLE.OWNER,
+  //   });
+  // }
 
   async signIn({ email, password }: LoginUserDto) {
     const res = await this.authService.loginUser(email, password);

@@ -7,7 +7,7 @@ import { ICustomerRepository } from 'src/modules/customer/domain/customer.reposi
 import { CustomerRepository } from 'src/modules/customer/repository/customer.repository';
 import { DatabaseProvider } from 'src/shared/db/db.provider';
 import { IUserRepository } from 'src/modules/user/domain/user.repository';
-import { UserRepository } from 'src/modules/user/repository/user.repository';
+import { UserRepository } from 'src/modules/user/infra/user.repository';
 
 @Module({
   imports: [PassportModule, JwtModule.register({})],
