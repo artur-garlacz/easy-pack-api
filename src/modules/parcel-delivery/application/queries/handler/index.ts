@@ -1,7 +1,7 @@
 import { GetParcelDeliveriesHandler } from './get-parcel-deliveries.handler';
-import { GetParcelDeliveryStatusesHandler } from './get-parcel-delivery-statuses.handler';
+import { GetParcelDeliveryDetailsHandler } from './get-parcel-delivery-details.handler';
 
 export const QueryHandlers = [
-  GetParcelDeliveryStatusesHandler,
+  GetParcelDeliveryDetailsHandler,
   GetParcelDeliveriesHandler,
 ];

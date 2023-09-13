@@ -135,20 +135,6 @@
     </style>
   </head>
   <body>
-    {{!
-    <h1>Parcel Created</h1>
-    }}
-    {{!--
-    <p>Dear {{userName}},</p>
-    <p>
-      Your parcel with the tracking number {{trackingNumber}} has been
-      successfully created.
-    </p>
-    <p>Thank you for choosing our services.</p>
-    --}}
-
-    <table></table>
-
     <td class='esd-stripe' align='center'>
       <table
         bgcolor='#bcb8b1'
@@ -276,13 +262,20 @@
                           background-color: #fafafa;
                           border-radius: 10px;
                           border-collapse: separate;
+                          margin-top: 20px;
                         '
                       >
                         <tbody>
                           <tr>
                             <a
                               target='_blank'
-                              style='background-color: #000; border-radius: 20px; padding: 10px; color: #FFF; margin-bottom: 20px;'
+                              style='
+                                background-color: #000;
+                                border-radius: 20px;
+                                padding: 10px;
+                                color: #fff;
+                                text-decoration: none;
+                              '
                               href='{{trackingLink}}'
                             >
                               Follow parcel online
@@ -290,7 +283,9 @@
                           </tr>
                           <tr>
                             <td align='left' class='esd-block-text es-p20'>
-                              <h3>Good news, delivery request has been accepted!</h3>
+                              <h3>
+                                Good news, delivery request has been accepted!
+                              </h3>
                               <p><br /></p>
                               <p>
                                 Your request for parcel delivery has been
@@ -301,7 +296,7 @@
                                 You can check parcel status via clicking link
                                 below or searching using tracking number:
                                 <span
-                                  style='font-weight:600;'
+                                  style='font-weight: 600'
                                 >{{trackingNumber}}</span><br /><br />
                               </p>
                             </td>

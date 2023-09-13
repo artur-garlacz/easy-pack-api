@@ -6,8 +6,4 @@ export class User extends AggregateRoot {
   lastName: string;
   email: string;
   role: string;
-
-  constructor(id: string, email: string) {
-    super();
-  }
 }

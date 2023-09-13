@@ -60,7 +60,8 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
         'ParcelDelivery.deliveryRequestId',
         'DeliveryRequest.id',
       )
-      .orWhere('DeliveryRequest.customerId', args.customerId || null);
+      .orWhere('DeliveryRequest.customerId', args.customerId || null)
+      .orderBy('DeliveryRequest.createdAt', 'desc');
 
     return deliveryRequests as DeliveryRequest[];
   }

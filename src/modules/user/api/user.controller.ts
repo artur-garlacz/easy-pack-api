@@ -4,8 +4,12 @@ import {
   Post,
   Body,
   BadRequestException,
+  Get,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
+import { UserAuthGuard } from 'src/modules/auth/auth.guard';
 import { LoginUserDto } from 'src/modules/user/api/dtos/login-user.dto';
 import { RegisterUserDto } from 'src/modules/user/api/dtos/register-user.dto';
 import { UserService } from 'src/modules/user/application/user.service';
@@ -17,7 +21,7 @@ export class UserController {
   @Post('/api/users/sign-up')
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Endpoint for checking if app is up and running',
+    description: 'Endpoint',
   })
   async signUpUser(@Body() data: RegisterUserDto) {
     try {
@@ -35,6 +39,20 @@ export class UserController {
   async signInUser(@Body() data: LoginUserDto) {
     try {
       return await this.userService.signIn(data);
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  @Get('/api/users/me')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Endpoint',
+  })
+  @UseGuards(UserAuthGuard)
+  async getUser(@Request() req) {
+    try {
+      return req.user;
     } catch (e) {
       throw new BadRequestException(e.message);
     }

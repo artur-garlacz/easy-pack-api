@@ -2,6 +2,7 @@ import {
   ParcelDelivery,
   ParcelDeliveryStatus,
 } from 'src/modules/parcel-delivery/domain/parcel-delivery';
+import { Pagination } from 'src/shared/utils/pagination';
 
 export const IParcelDeliveryRepository = Symbol('IParcelDeliveryRepository');
 
@@ -29,6 +30,14 @@ export type IGetParcelDelivery = {
   recipientDetails: any;
 };
 
+export type IGetParcelDeliveriesArgs = {
+  filters?: {
+    userId?: string;
+    status?: ParcelDeliveryStatus;
+  };
+  pagination: Pagination;
+};
+
 export interface IParcelDeliveryRepository {
   createParcelDelivery: (
     args: ICreateParcelDeliveryArgs,
@@ -37,10 +46,13 @@ export interface IParcelDeliveryRepository {
     args: IUpdateParcelDeliveryArgs,
   ) => Promise<ParcelDelivery>;
   getParcelDelivery: (id: string) => Promise<ParcelDelivery | null>;
-  getAllParcelDeliveries: (args?: {
-    userId?: string;
-  }) => Promise<ParcelDelivery[]>;
+  getParcelDeliveries: (
+    args: IGetParcelDeliveriesArgs,
+  ) => Promise<ParcelDelivery[]>;
+  getNumberOfParcels: (
+    args: Pick<IGetParcelDeliveriesArgs, 'filters'>,
+  ) => Promise<number>;
   getParcelDeliveryDetails: (
     args: IGetParcelDeliveryArgs,
-  ) => Promise<IGetParcelDelivery>;
+  ) => Promise<IGetParcelDelivery | null>;
 }

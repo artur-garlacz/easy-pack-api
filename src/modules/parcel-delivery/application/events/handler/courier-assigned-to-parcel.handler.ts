@@ -15,8 +15,8 @@ export class CourierAssignedToParcelHandler
   ) {}
 
   async handle(event: CourierAssignedToParcelEvent) {
-    this.eventStoreService.storeEvent(event);
-    this.parcelDeliveryRepository.updateParcelDelivery({
+    await this.eventStoreService.storeEvent(event);
+    await this.parcelDeliveryRepository.updateParcelDelivery({
       id: event.entityId,
       userId: event.payload.userId,
     });

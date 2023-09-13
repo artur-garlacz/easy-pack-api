@@ -1,13 +1,13 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { GetParcelDeliveryStatusesQuery } from 'src/modules/parcel-delivery/application/queries/impl/get-parcel-delivery-statuses.queries';
+import { GetParcelDeliveryDetailsQuery } from 'src/modules/parcel-delivery/application/queries/impl/get-parcel-delivery-details.queries';
 import { IParcelDeliveryRepository } from 'src/modules/parcel-delivery/domain/parcel-delivery.repository';
 import { EventStoreService } from 'src/shared/event-store/event-store.service';
 import { ENTITY_TYPE, EVENT_TYPE } from 'src/shared/events/events';
 
-@QueryHandler(GetParcelDeliveryStatusesQuery)
-export class GetParcelDeliveryStatusesHandler
-  implements IQueryHandler<GetParcelDeliveryStatusesQuery>
+@QueryHandler(GetParcelDeliveryDetailsQuery)
+export class GetParcelDeliveryDetailsHandler
+  implements IQueryHandler<GetParcelDeliveryDetailsQuery>
 {
   constructor(
     @Inject(IParcelDeliveryRepository)
@@ -15,10 +15,13 @@ export class GetParcelDeliveryStatusesHandler
     private readonly eventStoreService: EventStoreService,
   ) {}
 
-  async execute({ trackingNumber }: GetParcelDeliveryStatusesQuery) {
+  async execute({
+    args: { parcelId, trackingNumber },
+  }: GetParcelDeliveryDetailsQuery) {
     const parcelDelivery =
       await this.parcelDeliveryRepository.getParcelDeliveryDetails({
         trackingNumber,
+        id: parcelId,
       });
 
     if (!parcelDelivery || !parcelDelivery?.id) {
@@ -30,14 +33,15 @@ export class GetParcelDeliveryStatusesHandler
       entityId: parcelDelivery?.id,
     });
 
-    return Object.assign(parcelDelivery, {
-      status: events.map((event) => ({
+    return {
+      details: parcelDelivery,
+      history: events.map((event) => ({
         status:
           event.type === EVENT_TYPE.PARCEL_STATUS_UPDATED
             ? event.payload['status']
             : event.type,
         createdAt: event.createdAt,
       })),
-    });
+    };
   }
 }

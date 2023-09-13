@@ -12,12 +12,23 @@ export class GetParcelDeliveriesHandler
     private readonly parcelDeliveryRepository: IParcelDeliveryRepository,
   ) {}
 
-  async execute({ userId }: GetParcelDeliveriesQuery) {
+  async execute({ pagination, filters }: GetParcelDeliveriesQuery) {
     const parcelDeliveries =
-      await this.parcelDeliveryRepository.getAllParcelDeliveries({
-        userId,
+      await this.parcelDeliveryRepository.getParcelDeliveries({
+        pagination,
+        filters,
       });
 
-    return parcelDeliveries;
+    const numberOfParcelDeliveries =
+      await this.parcelDeliveryRepository.getNumberOfParcels({
+        filters,
+      });
+
+    return {
+      data: parcelDeliveries,
+      currentPage: pagination.page,
+      numberOfPages: Math.ceil(numberOfParcelDeliveries / pagination.limit),
+      itemsCount: numberOfParcelDeliveries,
+    };
   }
 }

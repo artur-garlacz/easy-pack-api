@@ -9,7 +9,8 @@ import { AppModule } from 'src/app.module';
 import { createLogger } from 'src/shared/logger';
 import { setupSwagger } from 'src/shared/swagger';
 import { AllExceptionsFilter } from 'src/shared/filters/all-excpetions.filter';
-import { ValidationPipe } from 'src/shared/pipes/validation.pipe';
+import { ValidationPipe } from '@nestjs/common';
+// import { ValidationPipe } from 'src/shared/pipes/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -21,10 +22,9 @@ async function bootstrap() {
   );
 
   const configService = app.get(ConfigService);
-  const port = configService.get<string>('APP_PORT');
+  const port: string = configService.get<string>('APP_PORT');
   const allExceptionsFilter = app.get(AllExceptionsFilter);
-  console.log(__dirname);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(allExceptionsFilter);
   setupSwagger(app);
   await app.listen(port);

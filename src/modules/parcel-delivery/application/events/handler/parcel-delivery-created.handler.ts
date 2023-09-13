@@ -31,7 +31,7 @@ export class ParcelDeliveryCreatedHandler
 
     await this.mailerService.sendEmail({
       to: parcelDelivery.senderDetails.email,
-      subject: 'Parcel created',
+      subject: 'Delivery request accepted',
       template: 'parcel-created',
       context: {
         trackingLink: `http://localhost:3000/customer/find-parcel?parcelNumber=${event.payload.trackingNumber}`,
