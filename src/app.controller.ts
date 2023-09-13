@@ -12,16 +12,6 @@ export class AppController {
     description: 'Endpoint for checking if app is up and running',
   })
   getHello(): string {
-    this.mailerService.sendEmail({
-      to: 'natalia.bobik@onet.pl',
-      subject: 'Parcel has been created!',
-      message: 'Parcel has been created',
-      template: 'parcel-created',
-      context: {
-        trackingNumber: 'EP12321342',
-        userName: 'Artur Garlacz',
-      },
-    });
     return 'Ok';
   }
 }

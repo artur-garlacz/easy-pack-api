@@ -9,7 +9,6 @@ jobs:
       - run: npm install -g pnpm
       - name: Check out repository code
         uses: actions/checkout@v3
+      - name: Clone repository code
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - run: pnpm install
-      - run: echo "🍏 This job's status is ${{ job.status }}."
