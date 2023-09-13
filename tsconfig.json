@@ -18,7 +18,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "*": ["./*"]
+      "@app/ep/*": [
+        "apps/easy-pack/src/*"
+      ],
+      "@app/comm/*": [
+        "apps/comm-service/src/*"
+      ]
     }
   }
 }
