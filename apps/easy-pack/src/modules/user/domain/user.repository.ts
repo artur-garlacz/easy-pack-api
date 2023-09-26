@@ -10,8 +10,15 @@ export interface ICreateUser {
   role: USER_ROLE;
 }
 
+export interface ICourier {
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
 export interface IUserRepository {
   getById: (id: string) => Promise<User | null>;
   getByCognitoId: (id: string) => Promise<User | null>;
   create: (user: ICreateUser) => Promise<User>;
+  getCouriers: () => Promise<ICourier[]>;
 }

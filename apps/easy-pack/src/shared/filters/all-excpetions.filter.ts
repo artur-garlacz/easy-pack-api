@@ -19,7 +19,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const status = isHttpException
       ? exception.getStatus()
       : HttpStatus.INTERNAL_SERVER_ERROR;
-
+    console.log(exception);
     const stack = isHttpException ? undefined : exception.stack;
     const message = isHttpException
       ? exception.message

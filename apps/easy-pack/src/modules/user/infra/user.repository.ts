@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import {
+  ICourier,
   ICreateUser,
   IUserRepository,
 } from '@app/ep/modules/user/domain/user.repository';
@@ -31,7 +32,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async create({ cognitoId, email, firstName, lastName, role }: ICreateUser) {
-    const user = this.db
+    const user = await this.db
       .getKnexInstance()
       .insert({
         id: randomUUID(),
@@ -44,5 +45,15 @@ export class UserRepository implements IUserRepository {
       .into('User');
 
     return user as any;
+  }
+
+  async getCouriers(): Promise<ICourier[]> {
+    const [couriers] = await this.db
+      .getKnexInstance()
+      .select('*')
+      .from('User')
+      .where('role', 'COURIER');
+
+    return couriers;
   }
 }

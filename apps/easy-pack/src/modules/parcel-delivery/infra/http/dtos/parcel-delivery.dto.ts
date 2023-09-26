@@ -11,6 +11,7 @@ export class UpdateParcelDeliveryStatusDto {
 
 export class ParcelDeliveryFiltersDto {
   @IsEnum(ParcelDeliveryStatus)
+  @IsOptional()
   status:
     | ParcelDeliveryStatus.PENDING
     | ParcelDeliveryStatus.IN_TRANSIT

@@ -62,9 +62,8 @@ export class ParcelDeliveryController {
   // @UseGuards(UserAuthGuard)
   async getParcelDeliveries(
     @Query() pagination: PaginationDto,
-    @Query() filters: ParcelDeliveryFiltersDto,
-  ): Promise<PageDto<any>> {
-    console.log('filters', filters);
+    @Query() filters?: ParcelDeliveryFiltersDto,
+  ) {
     return await this.queryBus.execute(
       new GetParcelDeliveriesQuery(pagination, {}),
     );

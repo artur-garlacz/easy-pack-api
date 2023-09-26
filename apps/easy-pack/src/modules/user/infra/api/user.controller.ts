@@ -57,4 +57,18 @@ export class UserController {
       throw new BadRequestException(e.message);
     }
   }
+
+  @Get('/api/users/couriers')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Endpoint',
+  })
+  // @UseGuards(UserAuthGuard)
+  async getCouriers() {
+    try {
+      return this.userService.getCouriers();
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
 }

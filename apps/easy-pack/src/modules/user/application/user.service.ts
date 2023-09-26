@@ -46,4 +46,8 @@ export class UserService {
       expiresIn: res.ExpiresIn,
     };
   }
+
+  async getCouriers() {
+    return await this.userRepository.getCouriers();
+  }
 }
