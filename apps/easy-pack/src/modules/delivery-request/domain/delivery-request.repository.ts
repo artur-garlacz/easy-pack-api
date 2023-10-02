@@ -4,6 +4,7 @@ import {
   DeliveryRequestStatus,
 } from '@app/ep/modules/delivery-request/domain/entity/delivery-request';
 import { Package } from '@app/ep/modules/delivery-request/domain/entity/package';
+import { Pagination } from '@app/ep/shared/utils/pagination';
 
 export const IDeliveryRequestRepository = Symbol('IDeliveryRequestRepository');
 
@@ -13,8 +14,12 @@ export type IUpdateDeliveryRequestArgs = {
 };
 
 export type IGetDeliveryRequestsArgs = {
-  customerId?: string;
-  status?: DeliveryRequestStatus;
+  filters?: {
+    customerId?: string;
+    userId?: string;
+    status?: DeliveryRequestStatus;
+  };
+  pagination: Pagination;
 };
 
 export interface IDeliveryRequestRepository {
@@ -23,12 +28,10 @@ export interface IDeliveryRequestRepository {
   ) => Promise<DeliveryRequestAddress>;
   createDeliveryRequest: (request: DeliveryRequest) => Promise<DeliveryRequest>;
   createPackage: (request: Package) => Promise<Package>;
-  getCustomerRequests: (
-    args?: IGetDeliveryRequestsArgs,
-  ) => Promise<DeliveryRequest[]>;
-  getAllRequests: (
-    args?: Pick<IGetDeliveryRequestsArgs, 'status'>,
-  ) => Promise<DeliveryRequest[]>;
+  getRequests: (args: IGetDeliveryRequestsArgs) => Promise<DeliveryRequest[]>;
+  getNumberOfRequests: (
+    args: Omit<IGetDeliveryRequestsArgs, 'pagination'>,
+  ) => Promise<number>;
   getById: (id: string) => Promise<DeliveryRequest>;
   getByCustomerId: (id: string) => Promise<DeliveryRequest>;
   updateDeliveryRequestStatus: (

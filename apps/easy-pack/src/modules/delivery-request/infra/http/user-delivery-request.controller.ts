@@ -14,8 +14,8 @@ import { ApiResponse } from '@nestjs/swagger';
 import { UserAuthGuard } from '@app/ep/modules/auth/auth.guard';
 import { UpdateDeliveryRequestStatusCommand } from '@app/ep/modules/delivery-request/application/commands/impl/update-delivery-request.command';
 import { GetDeliveryRequestsQuery } from '@app/ep/modules/delivery-request/application/queries/impl/get-delivery-requests.query';
-import { DeliveryRequestStatus } from '@app/ep/modules/delivery-request/domain/entity/delivery-request';
 import { UpdateDeliveryRequestStatusDto } from '@app/ep/modules/delivery-request/infra/http/dtos/update-delivery-request-status.dto';
+import { PaginationDto } from '@app/ep/shared/utils/pagination';
 
 @Controller()
 export class UserDeliveryRequestController {
@@ -26,8 +26,8 @@ export class UserDeliveryRequestController {
     status: HttpStatus.OK,
     description: 'Endpoint for getting parcel delivery requests',
   })
-  getDeliveryRequests(@Query('status') status: DeliveryRequestStatus) {
-    return this.queryBus.execute(new GetDeliveryRequestsQuery({ status }));
+  getDeliveryRequests(@Query() pagination: PaginationDto) {
+    return this.queryBus.execute(new GetDeliveryRequestsQuery(pagination, {}));
   }
 
   @Put('/api/users/delivery-requests/:id/status')

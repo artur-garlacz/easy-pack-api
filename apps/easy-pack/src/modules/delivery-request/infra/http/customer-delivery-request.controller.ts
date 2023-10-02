@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { CustomerAuthGuard } from '@app/ep/modules/auth/auth.guard';
 import { CreateDeliveryRequestCommand } from '@app/ep/modules/delivery-request/application/commands/impl/create-delivery-request.command';
 import { GetDeliveryRequestsQuery } from '@app/ep/modules/delivery-request/application/queries/impl/get-delivery-requests.query';
 import { CreateDeliveryRequestDto } from '@app/ep/modules/delivery-request/infra/http/dtos/create-delivery-request.dto';
+import { PaginationDto } from '@app/ep/shared/utils/pagination';
 
 @Controller()
 export class CustomerDeliveryRequestController {
@@ -45,9 +47,9 @@ export class CustomerDeliveryRequestController {
     description: "Endpoint for getting customer's parcel delivery requests",
   })
   @UseGuards(CustomerAuthGuard)
-  getDeliveryRequests(@Request() req: any) {
+  getDeliveryRequests(@Request() req: any, @Query() pagination: PaginationDto) {
     return this.queryBus.execute(
-      new GetDeliveryRequestsQuery({ customerId: req.user.userId }),
+      new GetDeliveryRequestsQuery(pagination, { customerId: req.user.userId }),
     );
   }
 }

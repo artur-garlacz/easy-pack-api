@@ -12,12 +12,20 @@ export class GetDeliveryRequestsHandler
     private readonly deliveryRequestRepository: IDeliveryRequestRepository,
   ) {}
 
-  execute({ filters }: GetDeliveryRequestsQuery) {
-    if (filters.customerId) {
-      return this.deliveryRequestRepository.getCustomerRequests({ ...filters });
-    }
-    return this.deliveryRequestRepository.getAllRequests({
-      status: filters.status,
+  async execute({ pagination, filters }: GetDeliveryRequestsQuery) {
+    const requests = await this.deliveryRequestRepository.getRequests({
+      pagination,
+      filters,
     });
+
+    const numberOfRequests =
+      await this.deliveryRequestRepository.getNumberOfRequests({ filters });
+
+    return {
+      data: requests,
+      currentPage: pagination.page,
+      numberOfPages: Math.ceil(numberOfRequests / pagination.limit),
+      itemsCount: numberOfRequests,
+    };
   }
 }

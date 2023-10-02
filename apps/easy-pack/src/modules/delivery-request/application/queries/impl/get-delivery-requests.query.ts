@@ -1,12 +1,12 @@
 import { DeliveryRequestStatus } from '@app/ep/modules/delivery-request/domain/entity/delivery-request';
+import { Pagination } from '@app/ep/shared/utils/pagination';
 
 export class GetDeliveryRequestsQuery {
-  constructor(public readonly filters?: Filters) {}
-}
-
-class Filters {
   constructor(
-    public readonly customerId?: string,
-    public readonly status?: DeliveryRequestStatus,
+    public readonly pagination: Pagination,
+    public readonly filters?: {
+      customerId?: string;
+      status?: DeliveryRequestStatus;
+    },
   ) {}
 }

@@ -27,43 +27,54 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
     return deliveryRequest;
   }
 
-  async getAllRequests(
-    args?: Pick<IGetDeliveryRequestsArgs, 'status'>,
-  ): Promise<DeliveryRequest[]> {
-    const condition = removeEmptyProperties(args);
-    const deliveryRequests = await this.db.knex
-      .select('*')
-      .from('DeliveryRequest')
-      .where(condition);
-
-    return deliveryRequests as DeliveryRequest[];
-  }
-
-  async getCustomerRequests(
-    args?: IGetDeliveryRequestsArgs,
-  ): Promise<DeliveryRequest[]> {
+  async getRequests({
+    pagination: { limit, page },
+    filters,
+  }: IGetDeliveryRequestsArgs): Promise<DeliveryRequest[]> {
     const deliveryRequests = await this.db.knex
       .select([
         'DeliveryRequest.id',
         'DeliveryRequest.customerId',
-        'description',
-        'type',
+        'DeliveryRequest.description',
+        'DeliveryRequest.type',
         'DeliveryRequest.status',
-        'ParcelDelivery.status as parcelStatus',
-        'shipmentAt',
+        'DeliveryRequest.shipmentAt',
         'DeliveryRequest.createdAt',
-        'ParcelDelivery.trackingNumber',
+        'packages.packages',
       ])
       .from('DeliveryRequest')
       .leftJoin(
-        'ParcelDelivery',
-        'ParcelDelivery.deliveryRequestId',
+        this.db
+          .knex('Package')
+          .select(
+            this.db.knex.raw(
+              '"Package"."deliveryRequestId", json_agg("Package".*) as "packages"',
+            ),
+          )
+          .groupBy('Package.id')
+          .as('packages'),
+        'packages.deliveryRequestId',
         'DeliveryRequest.id',
       )
-      .orWhere('DeliveryRequest.customerId', args.customerId || null)
-      .orderBy('DeliveryRequest.createdAt', 'desc');
+
+      // .where('DeliveryRequest.customerId', filters?.customerId || null)
+      .limit(limit)
+      .offset((page - 1) * limit);
 
     return deliveryRequests as DeliveryRequest[];
+  }
+
+  async getNumberOfRequests({ filters }: IGetDeliveryRequestsArgs) {
+    const conditions = removeEmptyProperties(filters || {});
+
+    const requests = await this.db
+      .getKnexInstance()
+      .table('DeliveryRequest')
+      .where(conditions)
+      .count('id')
+      .first();
+
+    return Number(requests.count) || 0;
   }
 
   getByCustomerId: (id: string) => Promise<DeliveryRequest>;
