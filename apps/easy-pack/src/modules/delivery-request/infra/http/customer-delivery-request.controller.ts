@@ -15,10 +15,16 @@ import { CreateDeliveryRequestCommand } from '@app/ep/modules/delivery-request/a
 import { GetDeliveryRequestsQuery } from '@app/ep/modules/delivery-request/application/queries/impl/get-delivery-requests.query';
 import { CreateDeliveryRequestDto } from '@app/ep/modules/delivery-request/infra/http/dtos/create-delivery-request.dto';
 import { PaginationDto } from '@app/ep/shared/utils/pagination';
+import { EstimateDeliveryRequestCostDto } from '@app/ep/modules/delivery-request/infra/http/dtos/estimate-delivery-request-cost.dto';
+import { DeliveryRequestService } from '@app/ep/modules/delivery-request/application/delivery-request.service';
 
 @Controller()
 export class CustomerDeliveryRequestController {
-  constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
+  constructor(
+    private commandBus: CommandBus,
+    private queryBus: QueryBus,
+    private deliveryRequestService: DeliveryRequestService,
+  ) {}
 
   @Post('/api/customers/delivery-requests')
   @ApiResponse({
@@ -51,5 +57,19 @@ export class CustomerDeliveryRequestController {
     return this.queryBus.execute(
       new GetDeliveryRequestsQuery(pagination, { customerId: req.user.userId }),
     );
+  }
+
+  @Get('/api/customers/delivery-requests/estimations')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      "Endpoint for getting customer's parcel delivery request estimation",
+  })
+  // @UseGuards(CustomerAuthGuard)
+  estimateShipmentCosts(
+    @Query() shipmentParams: EstimateDeliveryRequestCostDto,
+  ) {
+    console.log(shipmentParams);
+    return this.deliveryRequestService.estimateCosts(shipmentParams);
   }
 }

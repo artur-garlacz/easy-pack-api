@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { randomUUID } from 'crypto';
 import { CreateDeliveryRequestCommand } from '@app/ep/modules/delivery-request/application/commands/impl/create-delivery-request.command';
-import { IDeliveryRequestRepository } from '@app/ep/modules/delivery-request/domain/delivery-request.repository';
+import { IDeliveryRequestRepository } from '@app/ep/modules/delivery-request/domain/interface/delivery-request.interface';
 import { DeliveryRequestAddress } from '@app/ep/modules/delivery-request/domain/entity/address';
 import { DeliveryRequest } from '@app/ep/modules/delivery-request/domain/entity/delivery-request';
 import {

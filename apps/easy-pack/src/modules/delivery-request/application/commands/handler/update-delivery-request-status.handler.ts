@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateDeliveryRequestStatusCommand } from '@app/ep/modules/delivery-request/application/commands/impl/update-delivery-request.command';
 import { DeliveryRequestAcceptedEvent } from '@app/ep/modules/delivery-request/application/events/impl/delivery-request-accepted.event';
-import { IDeliveryRequestRepository } from '@app/ep/modules/delivery-request/domain/delivery-request.repository';
+import { IDeliveryRequestRepository } from '@app/ep/modules/delivery-request/domain/interface/delivery-request.interface';
 import { DeliveryRequestStatus } from '@app/ep/modules/delivery-request/domain/entity/delivery-request';
 
 @CommandHandler(UpdateDeliveryRequestStatusCommand)

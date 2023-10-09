@@ -3,7 +3,7 @@ import {
   IDeliveryRequestRepository,
   IGetDeliveryRequestsArgs,
   IUpdateDeliveryRequestArgs,
-} from '@app/ep/modules/delivery-request/domain/delivery-request.repository';
+} from '@app/ep/modules/delivery-request/domain/interface/delivery-request.interface';
 import { DeliveryRequestAddress } from '@app/ep/modules/delivery-request/domain/entity/address';
 import {
   DeliveryRequest,

@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetDeliveryRequestsQuery } from '@app/ep/modules/delivery-request/application/queries/impl/get-delivery-requests.query';
-import { IDeliveryRequestRepository } from '@app/ep/modules/delivery-request/domain/delivery-request.repository';
+import { IDeliveryRequestRepository } from '@app/ep/modules/delivery-request/domain/interface/delivery-request.interface';
 
 @QueryHandler(GetDeliveryRequestsQuery)
 export class GetDeliveryRequestsHandler
