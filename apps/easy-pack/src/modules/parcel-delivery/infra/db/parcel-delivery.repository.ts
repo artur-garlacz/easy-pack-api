@@ -40,7 +40,11 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
           .raw('row_to_json("rd".*) as "recipientDetails"'),
         'DeliveryRequest.type',
         'DeliveryRequest.shipmentAt',
+        'DeliveryRequest.description',
+        'packages.packages',
+        this.db.getKnexInstance().raw('row_to_json("User".*) as "user"'),
       ])
+      .distinctOn('ParcelDelivery.id')
       .from('ParcelDelivery')
       .leftJoin(
         'DeliveryRequest',
@@ -61,11 +65,23 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
         'DeliveryRequest.recipientDetailsId',
         'rd.id',
       )
+      .leftJoin('User', 'ParcelDelivery.userId', 'User.id')
+      .leftJoin(
+        this.db
+          .knex('Package')
+          .select(
+            this.db.knex.raw(
+              '"Package"."deliveryRequestId", json_agg("Package".*) as "packages"',
+            ),
+          )
+          .groupBy('Package.id')
+          .as('packages'),
+        'packages.deliveryRequestId',
+        'DeliveryRequest.id',
+      )
       .where(conditions)
       .limit(limit)
       .offset((page - 1) * limit);
-
-    console.log(parcelDeliveries.length);
 
     return parcelDeliveries;
   }

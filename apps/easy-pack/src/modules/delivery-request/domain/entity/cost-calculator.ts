@@ -22,15 +22,11 @@ export class CostCalculator {
     return false;
   }
 
-  //   calculate() {
-  //     if()
-  //   }
+  // getDiffBetweenCurrAndPickUpDate() {
+  //   return calculateDateDifference(new Date(), this.pickUpAt);
+  // }
 
-  getDiffBetweenCurrAndPickUpDate() {
-    return calculateDateDifference(new Date(), this.pickUpAt);
-  }
-
-  getDiffBetweenPickUpAndDeliveryDate() {
-    return calculateDateDifference(this.pickUpAt, this.deliveryAt);
-  }
+  // getDiffBetweenPickUpAndDeliveryDate() {
+  //   return calculateDateDifference(this.pickUpAt, this.deliveryAt);
+  // }
 }
