@@ -13,24 +13,6 @@ export type Pagination = {
   limit: number;
 };
 
-// export class PaginationDto {
-//   @IsOptional()
-//   @Type(() => Number)
-//   @IsNumber()
-//   @Min(1)
-//   page?: number = 1;
-
-//   @IsOptional()
-//   @Type(() => Number)
-//   @IsNumber()
-//   limit?: number = 10;
-
-//   constructor(page = 1, limit = 10) {
-//     this.page = page;
-//     this.limit = limit;
-//   }
-// }
-
 export class PaginationDto {
   //   @ApiPropertyOptional({ enum: Order, default: Order.ASC })
   //   @IsEnum(Order)

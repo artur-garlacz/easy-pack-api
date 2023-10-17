@@ -16,6 +16,7 @@ import { UpdateDeliveryRequestStatusCommand } from '@app/ep/modules/delivery-req
 import { GetDeliveryRequestsQuery } from '@app/ep/modules/delivery-request/application/queries/impl/get-delivery-requests.query';
 import { UpdateDeliveryRequestStatusDto } from '@app/ep/modules/delivery-request/infra/http/dtos/update-delivery-request-status.dto';
 import { PaginationDto } from '@app/ep/shared/utils/pagination';
+import { GetDeliveryRequestFiltersDto } from '@app/ep/modules/delivery-request/infra/http/dtos/get-delivery-requests.dto';
 
 @Controller()
 export class UserDeliveryRequestController {
@@ -26,8 +27,15 @@ export class UserDeliveryRequestController {
     status: HttpStatus.OK,
     description: 'Endpoint for getting parcel delivery requests',
   })
-  getDeliveryRequests(@Query() pagination: PaginationDto) {
-    return this.queryBus.execute(new GetDeliveryRequestsQuery(pagination, {}));
+  getDeliveryRequests(
+    @Query() pagination: PaginationDto,
+    @Query('status') status: GetDeliveryRequestFiltersDto['status'],
+  ) {
+    return this.queryBus.execute(
+      new GetDeliveryRequestsQuery(pagination, {
+        status,
+      }),
+    );
   }
 
   @Put('/api/users/delivery-requests/:id/status')

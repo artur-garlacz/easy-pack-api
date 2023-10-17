@@ -35,29 +35,24 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
       .select([
         'DeliveryRequest.id',
         'DeliveryRequest.customerId',
-        'DeliveryRequest.description',
-        'DeliveryRequest.type',
         'DeliveryRequest.status',
-        'DeliveryRequest.shipmentAt',
         'DeliveryRequest.createdAt',
-        'packages.packages',
+        'ParcelDelivery.trackingNumber',
       ])
+      .distinctOn('DeliveryRequest.id')
       .from('DeliveryRequest')
       .leftJoin(
-        this.db
-          .knex('Package')
-          .select(
-            this.db.knex.raw(
-              '"Package"."deliveryRequestId", json_agg("Package".*) as "packages"',
-            ),
-          )
-          .groupBy('Package.id')
-          .as('packages'),
-        'packages.deliveryRequestId',
+        'ParcelDelivery',
         'DeliveryRequest.id',
+        'ParcelDelivery.deliveryRequestId',
       )
-
-      // .where('DeliveryRequest.customerId', filters?.customerId || null)
+      .where(
+        this.db.knex.raw(
+          filters.status
+            ? `"DeliveryRequest"."status"='${filters.status}'`
+            : `"DeliveryRequest"."status"<>'NULL'`,
+        ),
+      )
       .limit(limit)
       .offset((page - 1) * limit);
 

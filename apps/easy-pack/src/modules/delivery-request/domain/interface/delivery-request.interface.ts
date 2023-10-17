@@ -16,7 +16,6 @@ export type IUpdateDeliveryRequestArgs = {
 export type IGetDeliveryRequestsArgs = {
   filters?: {
     customerId?: string;
-    userId?: string;
     status?: DeliveryRequestStatus;
   };
   pagination: Pagination;

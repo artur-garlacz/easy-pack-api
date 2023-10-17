@@ -28,8 +28,6 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
     pagination: { limit, page },
     filters,
   }: IGetParcelDeliveriesArgs) {
-    const conditions = removeEmptyProperties(filters || {});
-
     const parcelDeliveries = await this.db
       .getKnexInstance()
       .select([
@@ -79,7 +77,11 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
         'packages.deliveryRequestId',
         'DeliveryRequest.id',
       )
-      .where(conditions)
+      .where((qb) => {
+        if (filters.status) {
+          qb.where('ParcelDelivery.status', '=', filters.status);
+        }
+      })
       .limit(limit)
       .offset((page - 1) * limit);
 

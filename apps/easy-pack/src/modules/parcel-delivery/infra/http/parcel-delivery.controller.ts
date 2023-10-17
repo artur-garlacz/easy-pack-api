@@ -22,6 +22,7 @@ import {
   UpdateParcelDeliveryStatusDto,
 } from '@app/ep/modules/parcel-delivery/infra/http/dtos/parcel-delivery.dto';
 import { PageDto, PaginationDto } from '@app/ep/shared/utils/pagination';
+import { ParcelDeliveryStatus } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery';
 
 @Controller()
 export class ParcelDeliveryController {
@@ -65,7 +66,9 @@ export class ParcelDeliveryController {
     @Query() filters?: ParcelDeliveryFiltersDto,
   ) {
     return await this.queryBus.execute(
-      new GetParcelDeliveriesQuery(pagination, {}),
+      new GetParcelDeliveriesQuery(pagination, {
+        status: filters.status,
+      }),
     );
   }
 
