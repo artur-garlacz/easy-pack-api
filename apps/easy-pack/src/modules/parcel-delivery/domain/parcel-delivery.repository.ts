@@ -33,7 +33,7 @@ export type IGetParcelDelivery = {
 export type IGetParcelDeliveriesArgs = {
   filters?: {
     userId?: string;
-    status?: ParcelDeliveryStatus;
+    status?: ParcelDeliveryStatus | ParcelDeliveryStatus[];
   };
   pagination: Pagination;
 };
@@ -55,4 +55,9 @@ export interface IParcelDeliveryRepository {
   getParcelDeliveryDetails: (
     args: IGetParcelDeliveryArgs,
   ) => Promise<IGetParcelDelivery | null>;
+  // getParcelDeliveriesStats: () => Promise<{
+  // totalParcelsCount: number;
+  // unresolvedParcelsCount: number;
+  // deliveredParcelsCount: number;
+  // }>;
 }

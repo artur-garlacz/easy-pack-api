@@ -91,12 +91,17 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
   async getNumberOfParcels({
     filters,
   }: Pick<IGetParcelDeliveriesArgs, 'filters'>) {
-    const conditions = removeEmptyProperties(filters || {});
-
     const parcelDeliveries = await this.db
       .getKnexInstance()
       .table('ParcelDelivery')
-      .where(conditions)
+      .where((qb) => {
+        if (filters?.status) {
+          if (Array.isArray(filters.status)) {
+            return qb.whereIn('ParcelDelivery.status', filters.status);
+          }
+          return qb.where('ParcelDelivery.status', '=', filters.status);
+        }
+      })
       .count('id')
       .first();
 

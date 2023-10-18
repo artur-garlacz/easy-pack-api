@@ -21,8 +21,8 @@ import {
   ParcelDeliveryFiltersDto,
   UpdateParcelDeliveryStatusDto,
 } from '@app/ep/modules/parcel-delivery/infra/http/dtos/parcel-delivery.dto';
-import { PageDto, PaginationDto } from '@app/ep/shared/utils/pagination';
-import { ParcelDeliveryStatus } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery';
+import { PaginationDto } from '@app/ep/shared/utils/pagination';
+import { GetParcelDeliveriesStatsQuery } from '@app/ep/modules/parcel-delivery/application/queries/impl/get-parcel-deliveries-stats.queries';
 
 @Controller()
 export class ParcelDeliveryController {
@@ -70,6 +70,16 @@ export class ParcelDeliveryController {
         status: filters.status,
       }),
     );
+  }
+
+  @Get('/api/parcel-deliveries/stats')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Endpoint for getting parcel deliveries stats',
+  })
+  // @UseGuards(UserAuthGuard)
+  async getParcelDeliveriesStats() {
+    return await this.queryBus.execute(new GetParcelDeliveriesStatsQuery());
   }
 
   @Patch('/api/parcel-deliveries/:id/status')
