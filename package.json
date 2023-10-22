@@ -7,17 +7,18 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/apps/easy-pack/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
+    "test:types": "tsc --noEmit --project .",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./apps/easy-pack/test/jest-e2e.json",
     "db:rollback": "dotenv -- node_modules/.bin/knex migrate:rollback",
     "db:migrate:make": "dotenv -- node_modules/.bin/knex migrate:make",
     "db:migrate:run": "dotenv -- node_modules/.bin/knex migrate:latest",
@@ -29,17 +30,20 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.329.0",
     "@aws-sdk/credential-provider-cognito-identity": "^3.329.0",
     "@fastify/static": "^6.10.1",
+    "@googlemaps/google-maps-services-js": "^3.3.39",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
     "@nestjs/cqrs": "^9.0.3",
     "@nestjs/jwt": "^10.0.3",
+    "@nestjs/microservices": "^10.2.5",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-fastify": "^9.3.12",
     "@nestjs/swagger": "^6.2.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.0.3",
     "dotenv-cli": "^7.2.1",
     "handlebars": "^4.7.7",
@@ -90,7 +94,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -98,7 +102,10 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/apps/"
+    ]
   }
 }

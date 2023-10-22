@@ -9,16 +9,31 @@ services:
       - 5432:5432
     volumes:
       - ./data/postgres:/data/postgres
-  pgadmin:
-    links:
-      - postgres:postgres
-    container_name: pgadmin
-    image: dpage/pgadmin4
+  easy-pack-api:
+    container_name: easy-pack-api
+    build:
+      context: ./
+      target: dev
     env_file:
       - ./.env
     ports:
-      - 8080:80
+      - 8000:8000
     volumes:
-      - ./data/pgadmin:/root/.pgadmin
+      - ./:/usr/src/easy-pack
+      - ./node_modules:/usr/src/easy-pack/node_modules
+    working_dir: /usr/src/easy-pack
+    depends_on:
+      - postgres
+  # pgadmin:
+  #   links:
+  #     - postgres:postgres
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4
+  #   env_file:
+  #     - ./.env
+  #   ports:
+  #     - 8080:8085
+  #   volumes:
+  #     - ./data/pgadmin:/root/.pgadmin
 networks:
   easy-pack:
