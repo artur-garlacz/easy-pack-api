@@ -3,7 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CommandHandlers } from '@app/ep/modules/parcel-delivery/application/commands/handler';
 import { EventHandlers } from '@app/ep/modules/parcel-delivery/application/events/handler';
 import { QueryHandlers } from '@app/ep/modules/parcel-delivery/application/queries/handler';
-import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery.repository';
+import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/interface/parcel-delivery.repository';
 import { ParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/infra/db/parcel-delivery.repository';
 import { ParcelDeliveryController } from '@app/ep/modules/parcel-delivery/infra/http/parcel-delivery.controller';
 import { DatabaseProvider } from '@app/ep/shared/db/db.provider';

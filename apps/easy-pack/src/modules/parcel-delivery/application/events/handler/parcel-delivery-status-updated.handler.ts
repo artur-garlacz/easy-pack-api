@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { ParcelDeliveryStatusUpdatedEvent } from '@app/ep/modules/parcel-delivery/application/events/impl/parcel-delivery-status-updated.event';
-import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery.repository';
+import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/interface/parcel-delivery.repository';
 import { EventStoreService } from '@app/ep/shared/event-store/event-store.service';
 import { MailerService } from '@app/ep/shared/mailer/mailer.service';
 

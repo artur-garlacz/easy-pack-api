@@ -11,12 +11,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export enum PackageType {
-  ENVELOPE = 'ENVELOPE',
-  BOX = 'BOX',
-  OTHER = 'OTHER',
-}
-
 class PackageDto {
   @IsNumber()
   weight: number;

@@ -3,7 +3,7 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateParcelDeliveryStatusCommand } from '@app/ep/modules/parcel-delivery/application/commands/impl/update-parcel-delivery-status.command';
 import { ParcelDeliveryStatusUpdatedEvent } from '@app/ep/modules/parcel-delivery/application/events/impl/parcel-delivery-status-updated.event';
 import { ParcelDeliveryNotFoundError } from '@app/ep/modules/parcel-delivery/domain/errors/parcel-delivery-not-found.error';
-import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery.repository';
+import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/interface/parcel-delivery.repository';
 import { ENTITY_TYPE, EVENT_TYPE } from '@app/ep/shared/events/events';
 
 @CommandHandler(UpdateParcelDeliveryStatusCommand)

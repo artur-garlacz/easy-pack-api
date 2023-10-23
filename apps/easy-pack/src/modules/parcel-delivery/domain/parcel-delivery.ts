@@ -7,14 +7,13 @@ import { ENTITY_TYPE, EVENT_TYPE } from '@app/ep/shared/events/events';
 
 export class ParcelDelivery extends AggregateRoot {
   public id: string;
-  public deliveryRequestId: string;
+  public customerId: string;
   public userId: string;
   public trackingNumber: string;
   public status: ParcelDeliveryStatus;
 
-  create({ deliveryRequestId }: { deliveryRequestId: string }) {
+  create(customerId?: string) {
     this.id = randomUUID();
-    this.deliveryRequestId = deliveryRequestId;
     this.trackingNumber = this.generateTrackingNumber();
 
     this.apply(
@@ -24,8 +23,8 @@ export class ParcelDelivery extends AggregateRoot {
         EVENT_TYPE.PARCEL_CREATED,
         ENTITY_TYPE.PARCEL_DELIVERY,
         {
-          deliveryRequestId,
           trackingNumber: this.trackingNumber,
+          customerId,
         },
       ),
     );
@@ -79,6 +78,12 @@ export class ParcelDelivery extends AggregateRoot {
 
     return `EP${result}`;
   }
+}
+
+export enum PackageType {
+  ENVELOPE = 'ENVELOPE',
+  BOX = 'BOX',
+  OTHER = 'OTHER',
 }
 
 export enum ParcelDeliveryStatus {

@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetParcelDeliveriesQuery } from '@app/ep/modules/parcel-delivery/application/queries/impl/get-parcel-deliveries.queries';
-import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery.repository';
+import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/interface/parcel-delivery.repository';
 
 @QueryHandler(GetParcelDeliveriesQuery)
 export class GetParcelDeliveriesHandler

@@ -6,6 +6,6 @@ export class ParcelDeliveryCreatedEvent implements IEvent {
     public entityId: string,
     public type: EVENT_TYPE.PARCEL_CREATED,
     public entityType: ENTITY_TYPE.PARCEL_DELIVERY,
-    public payload: { deliveryRequestId: string; trackingNumber: string },
+    public payload: { trackingNumber: string; customerId?: string },
   ) {}
 }

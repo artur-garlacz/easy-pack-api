@@ -8,7 +8,6 @@ export const IParcelDeliveryRepository = Symbol('IParcelDeliveryRepository');
 
 export type ICreateParcelDeliveryArgs = {
   id: string;
-  deliveryRequestId: string;
   trackingNumber: string;
   userId?: string;
 };

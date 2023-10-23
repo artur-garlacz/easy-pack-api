@@ -6,7 +6,7 @@ import {
   IGetParcelDeliveryArgs,
   IParcelDeliveryRepository,
   IUpdateParcelDeliveryArgs,
-} from '@app/ep/modules/parcel-delivery/domain/parcel-delivery.repository';
+} from '@app/ep/modules/parcel-delivery/domain/interface/parcel-delivery.repository';
 import { DatabaseProvider } from '@app/ep/shared/db/db.provider';
 import { removeEmptyProperties } from '@app/ep/shared/utils/object';
 
@@ -36,31 +36,23 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
         this.db
           .getKnexInstance()
           .raw('row_to_json("rd".*) as "recipientDetails"'),
-        'DeliveryRequest.type',
-        'DeliveryRequest.shipmentAt',
-        'DeliveryRequest.description',
         'packages.packages',
         this.db.getKnexInstance().raw('row_to_json("User".*) as "user"'),
       ])
       .distinctOn('ParcelDelivery.id')
       .from('ParcelDelivery')
       .leftJoin(
-        'DeliveryRequest',
-        'ParcelDelivery.deliveryRequestId',
-        'DeliveryRequest.id',
-      )
-      .leftJoin(
         {
-          sd: 'DeliveryRequestAddress',
+          sd: 'ParcelAddress',
         },
-        'DeliveryRequest.senderDetailsId',
+        'ParcelAddress.senderDetailsId',
         'sd.id',
       )
       .leftJoin(
         {
-          rd: 'DeliveryRequestAddress',
+          rd: 'ParcelAddress',
         },
-        'DeliveryRequest.recipientDetailsId',
+        'ParcelAddress.recipientDetailsId',
         'rd.id',
       )
       .leftJoin('User', 'ParcelDelivery.userId', 'User.id')
@@ -69,13 +61,13 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
           .knex('Package')
           .select(
             this.db.knex.raw(
-              '"Package"."deliveryRequestId", json_agg("Package".*) as "packages"',
+              '"Package"."parcelDeliveryId", json_agg("Package".*) as "packages"',
             ),
           )
           .groupBy('Package.id')
           .as('packages'),
-        'packages.deliveryRequestId',
-        'DeliveryRequest.id',
+        'packages.parcelDeliveryId',
+        'ParcelDelivery.id',
       )
       .where((qb) => {
         if (filters.status) {
@@ -120,22 +112,17 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
       ])
       .from('ParcelDelivery')
       .leftJoin(
-        'DeliveryRequest',
-        'ParcelDelivery.deliveryRequestId',
-        'DeliveryRequest.id',
-      )
-      .leftJoin(
         {
-          sd: 'DeliveryRequestAddress',
+          sd: 'ParcelAddress',
         },
-        'DeliveryRequest.senderDetailsId',
+        'ParcelDelivery.senderDetailsId',
         'sd.id',
       )
       .leftJoin(
         {
-          rd: 'DeliveryRequestAddress',
+          rd: 'ParcelAddress',
         },
-        'DeliveryRequest.recipientDetailsId',
+        'ParcelDelivery.recipientDetailsId',
         'rd.id',
       )
       .where('ParcelDelivery.trackingNumber', args?.trackingNumber || null)
@@ -146,7 +133,6 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
 
   async createParcelDelivery({
     id,
-    deliveryRequestId,
     trackingNumber,
     userId,
   }: ICreateParcelDeliveryArgs) {
@@ -154,7 +140,6 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
       .getKnexInstance()
       .insert({
         id,
-        deliveryRequestId,
         userId: userId ?? null,
         status: ParcelDeliveryStatus.CREATED,
         trackingNumber,
@@ -176,8 +161,6 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
       .where({ id })
       .from('ParcelDelivery')
       .returning('*');
-
-    console.log(parcelDelivery);
 
     return parcelDelivery;
   }

@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetParcelDeliveryDetailsQuery } from '@app/ep/modules/parcel-delivery/application/queries/impl/get-parcel-delivery-details.queries';
-import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery.repository';
+import { IParcelDeliveryRepository } from '@app/ep/modules/parcel-delivery/domain/interface/parcel-delivery.repository';
 import { EventStoreService } from '@app/ep/shared/event-store/event-store.service';
 import { ENTITY_TYPE, EVENT_TYPE } from '@app/ep/shared/events/events';
 

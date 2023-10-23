@@ -52,7 +52,7 @@ export class UserRepository implements IUserRepository {
       .getKnexInstance()
       .select('*')
       .from('User')
-      .where('role', 'COURIER');
+      .where('role', '=', 'COURIER');
 
     return couriers;
   }
