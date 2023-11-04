@@ -25,7 +25,7 @@ export class UpdateParcelDeliveryStatusHandler
     if (!parcelDelivery) {
       throw new ParcelDeliveryNotFoundError(`Parcel not found with id: ${id}`);
     }
-
+    console.log('wewewewewe');
     this.eventBus.publish(
       new ParcelDeliveryStatusUpdatedEvent(
         '1.0.0',

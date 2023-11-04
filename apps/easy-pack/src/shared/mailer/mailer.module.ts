@@ -22,13 +22,13 @@ import { join } from 'path';
           defaults: {
             from: '"No Reply" <no-reply@easypack>',
           },
-          template: {
-            dir,
-            adapter: new HandlebarsAdapter(),
-            options: {
-              strict: true,
-            },
-          },
+          // template: {
+          //   dir,
+          //   adapter: new HandlebarsAdapter(),
+          //   options: {
+          //     strict: false,
+          //   },
+          // },
         };
       },
     }),

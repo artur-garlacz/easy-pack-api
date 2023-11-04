@@ -4,7 +4,6 @@ import { AuthService } from '@app/ep/modules/auth/auth.service';
 import { ConfirmAccountDto } from '@app/ep/modules/customer/api/dtos/confirm-account.dto';
 import { LoginCustomerDto } from '@app/ep/modules/customer/api/dtos/login-customer.dto';
 import { RegisterCustomerDto } from '@app/ep/modules/customer/api/dtos/register-customer.dto';
-import { RegisterCustomerCommand } from '@app/ep/modules/customer/application/commands/impl/register-customer.command';
 import { ICustomerRepository } from '@app/ep/modules/customer/domain/customer.repository';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class CustomerService {
   ) {}
 
   async signUp({ email, firstName, lastName, password }: RegisterCustomerDto) {
-    const customer = await this.customerRepository.getByEmail('email');
+    const customer = await this.customerRepository.getOne({ email });
 
     if (customer) {
       throw new Error('Customer already exists');
@@ -28,18 +27,12 @@ export class CustomerService {
 
     if (!UserSub) throw new Error('Cognito id is undefined');
 
-    this.commandBus.execute(
-      new RegisterCustomerCommand({
-        email,
-        cognitoId: UserSub,
-        firstName,
-        lastName,
-      }),
-    );
-
-    return {
-      message: "You've been successfully registered",
-    };
+    await this.customerRepository.create({
+      email,
+      cognitoId: UserSub,
+      firstName,
+      lastName,
+    });
   }
 
   async signIn({ email, password }: LoginCustomerDto) {

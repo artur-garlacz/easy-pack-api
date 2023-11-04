@@ -11,11 +11,11 @@ export class DeliveryRequestAcceptedHandler
   async handle({
     payload: { userId, deliveryRequestId },
   }: DeliveryRequestAcceptedEvent) {
-    await this.commandBus.execute(
-      new CreateParcelDeliveryCommand({
-        deliveryRequestId,
-        userId,
-      }),
-    );
+    // await this.commandBus.execute(
+    //   new CreateParcelDeliveryCommand({
+    //     deliveryRequestId,
+    //     userId,
+    //   }),
+    // );
   }
 }

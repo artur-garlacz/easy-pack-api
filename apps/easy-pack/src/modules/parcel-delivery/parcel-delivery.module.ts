@@ -9,6 +9,8 @@ import { ParcelDeliveryController } from '@app/ep/modules/parcel-delivery/infra/
 import { DatabaseProvider } from '@app/ep/shared/db/db.provider';
 import { EventStoreService } from '@app/ep/shared/event-store/event-store.service';
 import { MailerService } from '@app/ep/shared/mailer/mailer.service';
+import { ICustomerRepository } from '@app/ep/modules/customer/domain/customer.repository';
+import { CustomerRepository } from '@app/ep/modules/customer/repository/customer.repository';
 
 @Module({
   imports: [CqrsModule],
@@ -18,6 +20,10 @@ import { MailerService } from '@app/ep/shared/mailer/mailer.service';
       provide: IParcelDeliveryRepository,
       useClass: ParcelDeliveryRepository,
     },
+    {
+      provide: ICustomerRepository,
+      useClass: CustomerRepository,
+    },
     Logger,
     DatabaseProvider,
     EventStoreService,
@@ -26,5 +32,6 @@ import { MailerService } from '@app/ep/shared/mailer/mailer.service';
     ...EventHandlers,
     ...QueryHandlers,
   ],
+  exports: [...CommandHandlers, ...EventHandlers],
 })
 export class ParcelDeliveryModule {}

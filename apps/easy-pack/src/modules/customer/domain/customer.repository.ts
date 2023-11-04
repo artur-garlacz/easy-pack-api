@@ -9,9 +9,13 @@ export interface ICreateCustomer {
   lastName: string;
 }
 
+export type IGetOneArgs = {
+  id?: string;
+  cognitoId?: string;
+  email?: string;
+};
+
 export interface ICustomerRepository {
-  getById: (id: string) => Promise<Customer | null>;
-  getByCognitoId: (id: string) => Promise<Customer | null>;
-  getByEmail: (email: string) => Promise<Customer | null>;
+  getOne: (args: IGetOneArgs) => Promise<Customer | null>;
   create: (customer: ICreateCustomer) => Promise<Customer>;
 }

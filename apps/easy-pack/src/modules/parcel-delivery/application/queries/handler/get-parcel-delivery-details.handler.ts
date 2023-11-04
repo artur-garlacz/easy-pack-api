@@ -34,7 +34,10 @@ export class GetParcelDeliveryDetailsHandler
     });
 
     return {
-      details: parcelDelivery,
+      details: {
+        ...parcelDelivery,
+        price: Number(parcelDelivery.price || 0).toFixed(2),
+      },
       history: events.map((event) => ({
         status:
           event.type === EVENT_TYPE.PARCEL_STATUS_UPDATED

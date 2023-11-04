@@ -7,7 +7,7 @@ export class Package {
     public readonly width: number,
     public readonly height: number,
     public readonly description: string,
-    public readonly deliveryRequestId: string,
+    public readonly parcelDeliveryId: string,
   ) {}
 }
 

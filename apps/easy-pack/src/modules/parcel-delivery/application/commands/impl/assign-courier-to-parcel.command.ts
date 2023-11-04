@@ -9,5 +9,5 @@ export class AssignCourierToParcelCommandValidator {
   userId: string;
 
   @IsString()
-  deliveryRequestId: string;
+  parcelDeliveryId: string;
 }

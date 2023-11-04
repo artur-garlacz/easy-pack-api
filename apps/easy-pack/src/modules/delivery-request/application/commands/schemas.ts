@@ -67,9 +67,6 @@ export class CreateDeliveryRequestCommandValidator {
   @Type(() => AddressDto)
   deliveryAddress: AddressDto;
 
-  @IsEnum(PackageType)
-  type: PackageType;
-
   @IsString()
   description: string;
 

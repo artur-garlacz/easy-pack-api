@@ -12,11 +12,11 @@ export class ParcelDeliveryStatusCreatedHandler
   constructor(
     @Inject(IParcelDeliveryRepository)
     private readonly parcelDeliveryRepository: IParcelDeliveryRepository,
-    private readonly eventStoreService: EventStoreService,
-    private readonly mailerService: MailerService,
+    private readonly eventStoreService: EventStoreService, // private readonly mailerService: MailerService,
   ) {}
 
   async handle(event: ParcelDeliveryStatusUpdatedEvent) {
+    console.dir(event, { depth: null });
     await this.eventStoreService.storeEvent(event);
     await this.parcelDeliveryRepository.updateParcelDelivery({
       id: event.entityId,

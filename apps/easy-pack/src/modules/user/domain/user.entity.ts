@@ -3,8 +3,17 @@ export class User {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: USER_ROLE;
 }
+
+export type Courier = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: USER_ROLE;
+  assignedParcelsCount: number;
+};
 
 export enum USER_ROLE {
   OWNER = 'OWNER',

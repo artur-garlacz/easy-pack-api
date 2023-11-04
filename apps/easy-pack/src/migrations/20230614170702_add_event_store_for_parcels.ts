@@ -18,13 +18,13 @@ export async function up(knex: Knex): Promise<void> {
             'PARCEL_STATUS_UPDATED',
             'PARCEL_ARCHIVED',
           ],
-          { useNative: true, enumName: 'event_type' },
+          { useNative: true, enumName: 'EVENT_TYPE' },
         )
         .notNullable();
       table
         .enum('entityType', ['PARCEL_DELIVERY'], {
           useNative: true,
-          enumName: 'entity_type',
+          enumName: 'ENTITY_TYPE',
         })
         .notNullable();
       table.jsonb('payload').notNullable();

@@ -34,7 +34,7 @@ class PackageDto {
 
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string;
 }
 
 class AddressDto {
@@ -50,13 +50,13 @@ class AddressDto {
   locationNumber: string;
   @IsString()
   @IsOptional()
-  phoneNumber: string;
+  phoneNumber?: string;
   @IsEmail()
   @IsOptional()
-  email: string;
+  email?: string;
 }
 
-export class CreateParcelDeliveryCommandValidator {
+export class CreateParcelDeliveryDto {
   @IsArray()
   @ValidateNested({ each: true })
   @ArrayMinSize(1)
@@ -74,14 +74,20 @@ export class CreateParcelDeliveryCommandValidator {
   deliveryAddress: AddressDto;
 
   @IsString()
-  customerId: string;
-
-  @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsString()
   pickupAt: string;
 
   @IsString()
   shipmentAt: string;
+
+  @IsNumber()
+  price: number;
+}
+
+class CreateParcelDeliveryCommandValidator extends CreateParcelDeliveryDto {
+  @IsString()
+  customerId: string;
 }

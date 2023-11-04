@@ -15,8 +15,8 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable('ParcelDelivery', (table) => {
     table.uuid('id').primary();
-    table.uuid('senderDetailsId').references('id').inTable('ParcelAddress');
-    table.uuid('recipientDetailsId').references('id').inTable('ParcelAddress');
+    table.uuid('senderAddressId').references('id').inTable('ParcelAddress');
+    table.uuid('recipientAddressId').references('id').inTable('ParcelAddress');
     table
       .uuid('userId')
       .references('id')
@@ -41,13 +41,12 @@ export async function up(knex: Knex): Promise<void> {
       ],
       {
         useNative: true,
-        enumName: 'parcel_delivery_status',
+        enumName: 'PARCEL_DELIVERY_STATUS',
       },
     );
     table.string('trackingNumber').unique().notNullable();
     table.string('description');
-    table.decimal('price', 2).notNullable();
-    table.enum('status', ['CREATED', 'ACCEPTED', 'REJECTED']);
+    table.decimal('price').notNullable();
     table.dateTime('pickupAt').notNullable();
     table.dateTime('shipmentAt').notNullable();
     table.timestamps(true, true, true);
@@ -61,7 +60,10 @@ export async function up(knex: Knex): Promise<void> {
     table.float('length');
     table.float('height');
     table.string('description').nullable();
-    table.enum('type', ['ENVELOPE', 'BOX', 'OTHER']);
+    table.enum('type', ['ENVELOPE', 'BOX', 'OTHER'], {
+      useNative: true,
+      enumName: 'PACKAGE_TYPE',
+    });
     table
       .uuid('parcelDeliveryId')
       .references('id')

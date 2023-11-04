@@ -10,6 +10,8 @@ export class ParcelDelivery extends AggregateRoot {
   public customerId: string;
   public userId: string;
   public trackingNumber: string;
+  public price: number;
+  public createdAt: string;
   public status: ParcelDeliveryStatus;
 
   create(customerId?: string) {

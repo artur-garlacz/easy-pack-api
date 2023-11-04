@@ -63,7 +63,7 @@ export class AuthService {
     try {
       return await this.cognitoClient.send(signUpCommand);
     } catch (error) {
-      throw new SignUpError();
+      throw new SignUpError(error.message);
     }
   }
 

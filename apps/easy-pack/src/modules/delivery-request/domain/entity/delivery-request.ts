@@ -1,7 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import { DeliveryRequestAddress } from './address';
-import { Package } from './package';
-import { randomUUID } from 'crypto';
+import { Package } from '../../../parcel-delivery/domain/package';
 
 export class DeliveryRequest extends AggregateRoot {
   private _id: string;
@@ -10,8 +8,6 @@ export class DeliveryRequest extends AggregateRoot {
   private _shipmentAt: Date | string;
   private _status: DeliveryRequestStatus;
   private _packages: Package[];
-  private _pickUp: DeliveryRequestAddress;
-  private _destination: DeliveryRequestAddress;
   private _customerId: string;
 
   public get status(): DeliveryRequestStatus {
@@ -34,40 +30,8 @@ export class DeliveryRequest extends AggregateRoot {
     return this._shipmentAt;
   }
 
-  public get pickUp() {
-    return this._pickUp;
-  }
-
-  public get destination() {
-    return this._destination;
-  }
-
   public get customerId() {
     return this._customerId;
-  }
-
-  public create({
-    type,
-    description,
-    shipmentAt,
-    pickUp,
-    destination,
-    customerId,
-  }: {
-    type: string;
-    description: string;
-    shipmentAt: Date | string;
-    pickUp: DeliveryRequestAddress;
-    destination: DeliveryRequestAddress;
-    customerId: string;
-  }) {
-    this._id = randomUUID();
-    this._type = type;
-    this._description = description;
-    this._shipmentAt = shipmentAt;
-    this._pickUp = pickUp;
-    this._destination = destination;
-    this._customerId = customerId;
   }
 
   public accept() {

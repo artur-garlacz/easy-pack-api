@@ -1,9 +1,8 @@
-import { DeliveryRequestAddress } from '@app/ep/modules/delivery-request/domain/entity/address';
 import {
   DeliveryRequest,
   DeliveryRequestStatus,
 } from '@app/ep/modules/delivery-request/domain/entity/delivery-request';
-import { Package } from '@app/ep/modules/delivery-request/domain/entity/package';
+import { Package } from '@app/ep/modules/parcel-delivery/domain/package';
 import { Pagination } from '@app/ep/shared/utils/pagination';
 
 export const IDeliveryRequestRepository = Symbol('IDeliveryRequestRepository');
@@ -22,10 +21,6 @@ export type IGetDeliveryRequestsArgs = {
 };
 
 export interface IDeliveryRequestRepository {
-  createDeliveryRequestAddress: (
-    request: DeliveryRequestAddress,
-  ) => Promise<DeliveryRequestAddress>;
-  createDeliveryRequest: (request: DeliveryRequest) => Promise<DeliveryRequest>;
   createPackage: (request: Package) => Promise<Package>;
   getRequests: (args: IGetDeliveryRequestsArgs) => Promise<DeliveryRequest[]>;
   getNumberOfRequests: (

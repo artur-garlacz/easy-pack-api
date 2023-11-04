@@ -7,28 +7,26 @@ import {
   Get,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { UserAuthGuard } from '@app/ep/modules/auth/auth.guard';
 import { LoginUserDto } from '@app/ep/modules/user/infra/api/dtos/login-user.dto';
-import { RegisterUserDto } from '@app/ep/modules/user/infra/api/dtos/register-user.dto';
+import { CreateUserDto } from '@app/ep/modules/user/infra/api/dtos/register-user.dto';
 import { UserService } from '@app/ep/modules/user/application/user.service';
+import { PaginationDto } from '@app/ep/shared/utils/pagination';
 
 @Controller()
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('/api/users/sign-up')
+  @Post('/api/users')
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Endpoint for registration users (OWNER)',
+    description: 'Endpoint for creating users',
   })
-  async signUpUser(@Body() data: RegisterUserDto) {
-    try {
-      await this.userService.signUpUser(data);
-    } catch (e) {
-      throw new BadRequestException(e.message);
-    }
+  async createUser(@Body() data: CreateUserDto) {
+    return await this.userService.createUser(data);
   }
 
   @Post('/api/users/sign-in')
@@ -63,10 +61,10 @@ export class UserController {
     status: HttpStatus.OK,
     description: 'Endpoint',
   })
-  // @UseGuards(UserAuthGuard)
-  async getCouriers() {
+  @UseGuards(UserAuthGuard)
+  async getCouriers(@Query() pagination: PaginationDto) {
     try {
-      return this.userService.getCouriers();
+      return await this.userService.getCouriers({ pagination });
     } catch (e) {
       throw new BadRequestException(e.message);
     }

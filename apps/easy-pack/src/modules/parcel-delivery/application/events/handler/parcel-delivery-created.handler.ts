@@ -12,30 +12,25 @@ export class ParcelDeliveryCreatedHandler
   constructor(
     @Inject(IParcelDeliveryRepository)
     private readonly parcelDeliveryRepository: IParcelDeliveryRepository,
-    private readonly eventStoreService: EventStoreService,
-    private readonly mailerService: MailerService,
+    private readonly eventStoreService: EventStoreService, // private readonly mailerService: MailerService,
   ) {}
 
   async handle(event: ParcelDeliveryCreatedEvent) {
     await this.eventStoreService.storeEvent(event);
-    await this.parcelDeliveryRepository.createParcelDelivery({
-      id: event.entityId,
-      trackingNumber: event.payload.trackingNumber,
-    });
 
     const parcelDelivery =
       await this.parcelDeliveryRepository.getParcelDeliveryDetails({
         trackingNumber: event.payload.trackingNumber,
       });
 
-    await this.mailerService.sendEmail({
-      to: parcelDelivery.senderDetails.email,
-      subject: 'Delivery request accepted',
-      template: 'parcel-created',
-      context: {
-        trackingLink: `http://localhost:3000/customer/find-parcel?parcelNumber=${event.payload.trackingNumber}`,
-        trackingNumber: event.payload.trackingNumber,
-      },
-    });
+    // await this.mailerService.sendEmail({
+    //   to: parcelDelivery.senderDetails.email,
+    //   subject: 'Delivery request accepted',
+    //   template: 'parcel-created',
+    //   context: {
+    //     trackingLink: `http://localhost:3000/customer/find-parcel?parcelNumber=${event.payload.trackingNumber}`,
+    //     trackingNumber: event.payload.trackingNumber,
+    //   },
+    // });
   }
 }

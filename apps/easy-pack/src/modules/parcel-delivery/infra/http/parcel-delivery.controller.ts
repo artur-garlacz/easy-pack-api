@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Param,
   Patch,
-  Put,
+  Post,
   Query,
   Request,
   UseGuards,
@@ -23,6 +23,10 @@ import {
 } from '@app/ep/modules/parcel-delivery/infra/http/dtos/parcel-delivery.dto';
 import { PaginationDto } from '@app/ep/shared/utils/pagination';
 import { GetParcelDeliveriesStatsQuery } from '@app/ep/modules/parcel-delivery/application/queries/impl/get-parcel-deliveries-stats.queries';
+import {
+  CreateParcelDeliveryCommand,
+  CreateParcelDeliveryDto,
+} from '@app/ep/modules/parcel-delivery/application/commands/impl/create-parcel-delivery.command';
 
 @Controller()
 export class ParcelDeliveryController {
@@ -41,12 +45,33 @@ export class ParcelDeliveryController {
     }
   }
 
+  @Post('/api/parcel-deliveries')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Endpoint for creating parcel deliveries',
+  })
+  // @UseGuards(CustomerAuthGuard)
+  async createDeliveryRequest(
+    @Body()
+    parcelDelivery: CreateParcelDeliveryDto,
+    @Request() req: any,
+  ) {
+    await this.commandBus.execute(
+      new CreateParcelDeliveryCommand({
+        ...parcelDelivery,
+        customerId: req.user.userId,
+      }),
+    );
+
+    return { message: 'Parcel delivery created successfully' };
+  }
+
   @Get('/api/parcel-deliveries/:id')
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Endpoint for getting parcel delivery details',
   })
-  // @UseGuards(UserAuthGuard)
+  @UseGuards(UserAuthGuard)
   async getParcelDeliveryDetails(@Param('id') id: string) {
     return await this.queryBus.execute(
       new GetParcelDeliveryDetailsQuery({
@@ -60,7 +85,7 @@ export class ParcelDeliveryController {
     status: HttpStatus.OK,
     description: 'Endpoint for getting parcel delivery details',
   })
-  // @UseGuards(UserAuthGuard)
+  @UseGuards(UserAuthGuard)
   async getParcelDeliveries(
     @Query() pagination: PaginationDto,
     @Query() filters?: ParcelDeliveryFiltersDto,
@@ -77,7 +102,7 @@ export class ParcelDeliveryController {
     status: HttpStatus.OK,
     description: 'Endpoint for getting parcel deliveries stats',
   })
-  // @UseGuards(UserAuthGuard)
+  @UseGuards(UserAuthGuard)
   async getParcelDeliveriesStats() {
     return await this.queryBus.execute(new GetParcelDeliveriesStatsQuery());
   }
@@ -94,13 +119,14 @@ export class ParcelDeliveryController {
     @Body()
     { status }: UpdateParcelDeliveryStatusDto,
   ) {
-    return await this.commandBus.execute(
+    await this.commandBus.execute(
       new UpdateParcelDeliveryStatusCommand({
         id,
         status,
         userId: req.user.userId,
       }),
     );
+    return { message: 'Parcel status updated successfully' };
   }
 
   @Patch('/api/parcel-deliveries/:id/assigned-users')
@@ -108,17 +134,19 @@ export class ParcelDeliveryController {
     status: HttpStatus.OK,
     description: 'Endpoint for assigning users to parcel delivery',
   })
-  // @UseGuards(UserAuthGuard)
+  @UseGuards(UserAuthGuard)
   async assignUserToParcelDelivery(
     @Param('id') id: string,
     @Body()
     { userId }: { userId: string },
   ) {
-    return await this.commandBus.execute(
+    await this.commandBus.execute(
       new AssignCourierToParcelCommand({
-        deliveryRequestId: id,
+        parcelDeliveryId: id,
         userId,
       }),
     );
+
+    return { message: 'User assigned to parcel successfully' };
   }
 }

@@ -1,12 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MailerService as MailService } from '@nestjs-modules/mailer';
+import {
+  ISendMailOptions,
+  MailerService as MailService,
+} from '@nestjs-modules/mailer';
 import { join } from 'path';
-import { DatabaseProvider } from '@app/ep/shared/db/db.provider';
 
 @Injectable()
 export class MailerService {
   constructor(
-    private readonly db: DatabaseProvider,
     private readonly mailService: MailService,
     private readonly logger: Logger,
   ) {}
@@ -17,12 +18,14 @@ export class MailerService {
     message,
     template,
     context,
+    attachments,
   }: {
     to: string;
     subject: string;
     message?: string;
     template?: string;
     context?: any;
+    attachments?: ISendMailOptions['attachments'];
   }): Promise<void> {
     try {
       await this.mailService.sendMail({
@@ -31,18 +34,20 @@ export class MailerService {
         text: message,
         template,
         context,
-        attachments: [
-          {
-            filename: 'EPLogo.png',
-            path: join(__dirname, 'assets/EPLogo.png'),
-            cid: 'logo',
-          },
-        ],
+        attachments,
       });
 
+      // [
+      //   {
+      //     filename: 'EPLogo.png',
+      //     path: join(__dirname, 'assets/EPLogo.png'),
+      //     cid: 'logo',
+      //   },
+      // ]
+
       this.logger.log(`Email sent successfully to ${to}`);
-      // this.db.knex.insert({}).into('Notification').returning('*');
     } catch (error) {
+      console.log(error);
       this.logger.error(`Error sending email to ${to}`);
     }
   }

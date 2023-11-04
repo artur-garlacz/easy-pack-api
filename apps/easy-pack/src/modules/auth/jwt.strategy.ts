@@ -36,10 +36,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    console.log('payload', payload);
     if (payload['cognito:groups'].includes('Customers')) {
-      const customer = await this.customerRepository.getByCognitoId(
-        payload.sub,
-      );
+      const customer = await this.customerRepository.getOne({
+        cognitoId: payload.sub,
+      });
 
       if (!customer) {
         throw new Error('Customer not found');
@@ -54,19 +55,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       };
     }
 
-    const user = await this.userRepository.getByCognitoId(payload.sub);
+    if (payload['cognito:groups'].includes('Users')) {
+      const user = await this.userRepository.getByCognitoId(payload.sub);
+      console.log('user', user);
+      if (!user) {
+        throw new Error('User not found');
+      }
 
-    if (!user) {
-      throw new Error('User not found');
+      return {
+        cognitoId: payload.sub,
+        userId: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      };
     }
-
-    return {
-      cognitoId: payload.sub,
-      userId: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
-    };
   }
 }

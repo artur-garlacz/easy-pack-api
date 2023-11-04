@@ -3,9 +3,13 @@ import { randomUUID } from 'crypto';
 import {
   ICourier,
   ICreateUser,
+  IGetCouriersArgs,
+  IGetManyUsersArgs,
+  IGetUsersCountArgs,
   IUserRepository,
 } from '@app/ep/modules/user/domain/user.repository';
 import { DatabaseProvider } from '@app/ep/shared/db/db.provider';
+import { Courier } from '@app/ep/modules/user/domain/user.entity';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -47,13 +51,29 @@ export class UserRepository implements IUserRepository {
     return user as any;
   }
 
-  async getCouriers(): Promise<ICourier[]> {
-    const [couriers] = await this.db
+  async getMany({
+    pagination: { limit, page },
+    filters: { role },
+  }: IGetManyUsersArgs): Promise<Courier[]> {
+    const couriers = await this.db
       .getKnexInstance()
       .select('*')
       .from('User')
-      .where('role', '=', 'COURIER');
+      .where('role', '=', role)
+      .limit(limit)
+      .offset((page - 1) * limit);
 
     return couriers;
+  }
+
+  async getCount({ filters: { role } }: IGetUsersCountArgs): Promise<number> {
+    const couriers = await this.db
+      .getKnexInstance()
+      .from('User')
+      .where('role', '=', role)
+      .count('id')
+      .first();
+
+    return Number(couriers.count) || 0;
   }
 }

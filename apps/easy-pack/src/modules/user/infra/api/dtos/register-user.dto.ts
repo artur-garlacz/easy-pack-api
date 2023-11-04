@@ -1,6 +1,14 @@
-import { IsEmail, IsString, Matches, MinLength } from 'class-validator';
+import { USER_ROLE } from '@app/ep/modules/user/domain/user.entity';
+import {
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
-export class RegisterUserDto {
+export class CreateUserDto {
   @IsEmail()
   email: string;
 
@@ -12,10 +20,6 @@ export class RegisterUserDto {
   @MinLength(1)
   lastName: string;
 
-  @IsString()
-  @MinLength(8)
-  @Matches(/[a-z]/)
-  @Matches(/[A-Z]/)
-  @Matches(/[0-9]/)
-  password: string;
+  @IsEnum(USER_ROLE)
+  role: USER_ROLE;
 }

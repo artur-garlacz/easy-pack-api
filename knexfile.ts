@@ -3,7 +3,7 @@ export default {
     client: 'pg',
     connection: process.env.DATABASE_URL,
     migrations: {
-      directory: 'src/migrations',
+      directory: 'apps/easy-pack/src/migrations',
     },
     seeds: {
       directory: 'src/seeds',
@@ -14,7 +14,8 @@ export default {
     connection:
       'postgresql://admin:admin@localhost:5432/easypack?schema=public&connect_timeout=500',
     migrations: {
-      directory: 'src/migrations',
+      directory: 'apps/easy-pack/src/migrations',
+      schema: 'public',
     },
     seeds: {
       directory: 'src/seeds',
@@ -24,7 +25,7 @@ export default {
     client: 'pg',
     connection: process.env.DATABASE_URL,
     migrations: {
-      directory: 'src/migrations',
+      directory: 'apps/easy-pack/src/migrations',
     },
     seeds: {
       directory: 'src/seeds',

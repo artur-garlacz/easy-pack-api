@@ -3,12 +3,16 @@ import { ParcelDeliveryStatus } from '@app/ep/modules/parcel-delivery/domain/par
 import {
   ICreateParcelDeliveryArgs,
   IGetParcelDeliveriesArgs,
+  IGetParcelDeliveriesStatsArgs,
   IGetParcelDeliveryArgs,
   IParcelDeliveryRepository,
   IUpdateParcelDeliveryArgs,
 } from '@app/ep/modules/parcel-delivery/domain/interface/parcel-delivery.repository';
 import { DatabaseProvider } from '@app/ep/shared/db/db.provider';
 import { removeEmptyProperties } from '@app/ep/shared/utils/object';
+import { Address } from '@app/ep/modules/parcel-delivery/domain/address';
+import { Package } from '@app/ep/modules/parcel-delivery/domain/package';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
@@ -32,29 +36,11 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
       .getKnexInstance()
       .select([
         'ParcelDelivery.*',
-        this.db.getKnexInstance().raw('row_to_json("sd".*) as "senderDetails"'),
-        this.db
-          .getKnexInstance()
-          .raw('row_to_json("rd".*) as "recipientDetails"'),
         'packages.packages',
         this.db.getKnexInstance().raw('row_to_json("User".*) as "user"'),
       ])
       .distinctOn('ParcelDelivery.id')
       .from('ParcelDelivery')
-      .leftJoin(
-        {
-          sd: 'ParcelAddress',
-        },
-        'ParcelAddress.senderDetailsId',
-        'sd.id',
-      )
-      .leftJoin(
-        {
-          rd: 'ParcelAddress',
-        },
-        'ParcelAddress.recipientDetailsId',
-        'rd.id',
-      )
       .leftJoin('User', 'ParcelDelivery.userId', 'User.id')
       .leftJoin(
         this.db
@@ -105,25 +91,39 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
       .getKnexInstance()
       .select([
         'ParcelDelivery.*',
-        this.db.getKnexInstance().raw('row_to_json("sd".*) as "senderDetails"'),
+        'packages.packages',
+        this.db.getKnexInstance().raw('row_to_json("sd".*) as "senderAddress"'),
         this.db
           .getKnexInstance()
-          .raw('row_to_json("rd".*) as "recipientDetails"'),
+          .raw('row_to_json("rd".*) as "recipientAddress"'),
       ])
       .from('ParcelDelivery')
       .leftJoin(
         {
           sd: 'ParcelAddress',
         },
-        'ParcelDelivery.senderDetailsId',
+        'ParcelDelivery.senderAddressId',
         'sd.id',
       )
       .leftJoin(
         {
           rd: 'ParcelAddress',
         },
-        'ParcelDelivery.recipientDetailsId',
+        'ParcelDelivery.recipientAddressId',
         'rd.id',
+      )
+      .leftJoin(
+        this.db
+          .knex('Package')
+          .select(
+            this.db.knex.raw(
+              '"Package"."parcelDeliveryId", json_agg("Package".*) as "packages"',
+            ),
+          )
+          .groupBy('Package.id')
+          .as('packages'),
+        'packages.parcelDeliveryId',
+        'ParcelDelivery.id',
       )
       .where('ParcelDelivery.trackingNumber', args?.trackingNumber || null)
       .orWhere('ParcelDelivery.id', args?.id || null);
@@ -131,18 +131,52 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
     return parcelDelivery;
   }
 
+  async getParcelDeliveriesStats({ filters }: IGetParcelDeliveriesStatsArgs) {
+    const parcelDeliveries = await this.db
+      .getKnexInstance()
+      .select('*')
+      .from('ParcelDelivery')
+      .where((qb) => {
+        if (filters.status) {
+          qb.where('ParcelDelivery.status', '=', filters.status);
+        }
+        if (filters.date) {
+          qb.whereBetween('ParcelDelivery.createdAt', [
+            filters.date.from,
+            filters.date.to,
+          ]);
+        }
+      })
+      .orderBy('ParcelDelivery.createdAt', 'desc');
+
+    return parcelDeliveries;
+  }
+
   async createParcelDelivery({
     id,
     trackingNumber,
-    userId,
+    customerId,
+    pickupAt,
+    price,
+    recipientAddressId,
+    senderAddressId,
+    shipmentAt,
+    description,
   }: ICreateParcelDeliveryArgs) {
     const [parcelDelivery] = await this.db
       .getKnexInstance()
       .insert({
         id,
-        userId: userId ?? null,
+        userId: null,
         status: ParcelDeliveryStatus.CREATED,
         trackingNumber,
+        customerId,
+        pickupAt,
+        price,
+        recipientAddressId,
+        senderAddressId,
+        shipmentAt,
+        description,
       })
       .into('ParcelDelivery')
       .returning('*');
@@ -163,5 +197,59 @@ export class ParcelDeliveryRepository implements IParcelDeliveryRepository {
       .returning('*');
 
     return parcelDelivery;
+  }
+
+  async createPackage({
+    id,
+    description,
+    height,
+    length,
+    measurementUnit,
+    weight,
+    width,
+    parcelDeliveryId,
+  }: Package & { parcelDeliveryId: string }) {
+    const [packageItem] = await this.db
+      .getKnexInstance()
+      .insert({
+        id,
+        description,
+        height,
+        length,
+        measurementUnit,
+        weight,
+        width,
+        parcelDeliveryId,
+      })
+      .into('Package')
+      .returning('*');
+
+    return packageItem as Package;
+  }
+
+  async createParcelAddress({
+    country,
+    city,
+    locationNumber,
+    postalCode,
+    street,
+    email,
+    phoneNumber,
+  }: Address) {
+    const [address] = await this.db.knex
+      .insert({
+        id: randomUUID(),
+        country,
+        city,
+        street,
+        postalCode,
+        locationNumber,
+        email,
+        phoneNumber,
+      })
+      .into('ParcelAddress')
+      .returning('*');
+
+    return address;
   }
 }

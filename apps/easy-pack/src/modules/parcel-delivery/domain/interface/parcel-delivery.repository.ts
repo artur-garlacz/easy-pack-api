@@ -1,4 +1,9 @@
 import {
+  Address,
+  ParcelAddress,
+} from '@app/ep/modules/parcel-delivery/domain/address';
+import { Package } from '@app/ep/modules/parcel-delivery/domain/package';
+import {
   ParcelDelivery,
   ParcelDeliveryStatus,
 } from '@app/ep/modules/parcel-delivery/domain/parcel-delivery';
@@ -8,8 +13,14 @@ export const IParcelDeliveryRepository = Symbol('IParcelDeliveryRepository');
 
 export type ICreateParcelDeliveryArgs = {
   id: string;
+  senderAddressId: string;
+  recipientAddressId: string;
   trackingNumber: string;
-  userId?: string;
+  customerId: string;
+  description?: string;
+  price: number | string;
+  pickupAt: string;
+  shipmentAt: string;
 };
 
 export type IUpdateParcelDeliveryArgs = {
@@ -23,12 +34,6 @@ export type IGetParcelDeliveryArgs = {
   trackingNumber?: string;
 };
 
-export type IGetParcelDelivery = {
-  id: string;
-  senderDetails: any;
-  recipientDetails: any;
-};
-
 export type IGetParcelDeliveriesArgs = {
   filters?: {
     userId?: string;
@@ -37,7 +42,29 @@ export type IGetParcelDeliveriesArgs = {
   pagination: Pagination;
 };
 
+export type IGetParcelDeliveriesStatsArgs = {
+  filters?: {
+    date?: {
+      from: string | Date;
+      to: string | Date;
+    };
+    status?: ParcelDeliveryStatus;
+  };
+};
+
+export type IParcelDeliveryDetails = {
+  id: string;
+  price: string;
+  senderAddress: any;
+  recipientAddress: any;
+  packages: Array<Package>;
+};
+
 export interface IParcelDeliveryRepository {
+  createParcelAddress: (
+    parcel: Address,
+  ) => Promise<ParcelAddress & { id: string }>;
+  createPackage: (request: Package) => Promise<Package>;
   createParcelDelivery: (
     args: ICreateParcelDeliveryArgs,
   ) => Promise<ParcelDelivery>;
@@ -53,10 +80,8 @@ export interface IParcelDeliveryRepository {
   ) => Promise<number>;
   getParcelDeliveryDetails: (
     args: IGetParcelDeliveryArgs,
-  ) => Promise<IGetParcelDelivery | null>;
-  // getParcelDeliveriesStats: () => Promise<{
-  // totalParcelsCount: number;
-  // unresolvedParcelsCount: number;
-  // deliveredParcelsCount: number;
-  // }>;
+  ) => Promise<IParcelDeliveryDetails | null>;
+  getParcelDeliveriesStats: (
+    args: IGetParcelDeliveriesStatsArgs,
+  ) => Promise<any>;
 }

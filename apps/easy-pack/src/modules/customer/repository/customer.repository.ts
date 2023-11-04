@@ -3,43 +3,28 @@ import { randomUUID } from 'crypto';
 import {
   ICreateCustomer,
   ICustomerRepository,
+  IGetOneArgs,
 } from '@app/ep/modules/customer/domain/customer.repository';
 import { DatabaseProvider } from '@app/ep/shared/db/db.provider';
+import { removeEmptyProperties } from '@app/ep/shared/utils/object';
 
 @Injectable()
 export class CustomerRepository implements ICustomerRepository {
   constructor(private readonly db: DatabaseProvider) {}
 
-  async getById() {
-    return null;
-  }
-
-  async getByEmail(email: string) {
-    try {
-      const customer = await this.db
-        .getKnexInstance()
-        .select()
-        .from('Customer')
-        .where('email', email);
-
-      return customer[0];
-    } catch (e) {
-      throw new Error('Could not register customer');
-    }
-  }
-
-  async getByCognitoId(id: string) {
-    const customer = await this.db
+  async getOne(filters: IGetOneArgs) {
+    const conditions = removeEmptyProperties(filters);
+    const [customer] = await this.db
       .getKnexInstance()
       .select()
       .from('Customer')
-      .where('cognitoId', id);
+      .where(conditions);
 
-    return customer[0] as any;
+    return customer || null;
   }
 
   async create({ cognitoId, email, firstName, lastName }: ICreateCustomer) {
-    const customer = this.db
+    const [customer] = await this.db
       .getKnexInstance()
       .insert({
         id: randomUUID(),
@@ -48,8 +33,9 @@ export class CustomerRepository implements ICustomerRepository {
         firstName,
         lastName,
       })
-      .into('Customer');
+      .into('Customer')
+      .returning('*');
 
-    return customer as any;
+    return customer;
   }
 }

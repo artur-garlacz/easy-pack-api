@@ -10,6 +10,7 @@ import { DeliveryRequestModule } from '@app/ep/modules/delivery-request/delivery
 import { AllExceptionsFilter } from '@app/ep/shared/filters/all-excpetions.filter';
 import { ParcelDeliveryModule } from '@app/ep/modules/parcel-delivery/parcel-delivery.module';
 import { MailerModule } from '@app/ep/shared/mailer/mailer.module';
+import { SeedModule } from '@app/ep/shared/seeds/seed.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MailerModule } from '@app/ep/shared/mailer/mailer.module';
         connection: process.env.DATABASE_URL,
       },
     }),
+    SeedModule,
     MailerModule,
     CqrsModule,
     AuthModule,

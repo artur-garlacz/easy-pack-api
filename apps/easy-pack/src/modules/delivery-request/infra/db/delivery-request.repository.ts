@@ -4,12 +4,11 @@ import {
   IGetDeliveryRequestsArgs,
   IUpdateDeliveryRequestArgs,
 } from '@app/ep/modules/delivery-request/domain/interface/delivery-request.interface';
-import { DeliveryRequestAddress } from '@app/ep/modules/delivery-request/domain/entity/address';
 import {
   DeliveryRequest,
   DeliveryRequestStatus,
 } from '@app/ep/modules/delivery-request/domain/entity/delivery-request';
-import { Package } from '@app/ep/modules/delivery-request/domain/entity/package';
+import { Package } from '@app/ep/modules/parcel-delivery/domain/package';
 import { DatabaseProvider } from '@app/ep/shared/db/db.provider';
 import { removeEmptyProperties } from '@app/ep/shared/utils/object';
 
@@ -74,34 +73,6 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
 
   getByCustomerId: (id: string) => Promise<DeliveryRequest>;
 
-  async createDeliveryRequest({
-    id,
-    destination,
-    pickUp,
-    description,
-    type,
-    shipmentAt,
-    customerId,
-  }: DeliveryRequest) {
-    const [deliveryRequest] = await this.db
-      .getKnexInstance()
-      .insert({
-        id,
-        senderDetailsId: pickUp.id,
-        recipientDetailsId: destination.id,
-        orderingPartyDetailsId: null,
-        description,
-        type,
-        shipmentAt,
-        customerId,
-        status: DeliveryRequestStatus.CREATED,
-      })
-      .into('DeliveryRequest')
-      .returning('*');
-
-    return deliveryRequest as DeliveryRequest;
-  }
-
   async updateDeliveryRequestStatus({
     id,
     status,
@@ -144,7 +115,7 @@ export class DeliveryRequestRepository implements IDeliveryRequestRepository {
     return packageItem as any;
   }
 
-  async createDeliveryRequestAddress({ id, address }: DeliveryRequestAddress) {
+  async createDeliveryRequestAddress({ id, address }: any) {
     const [pickUpAddress] = await this.db
       .getKnexInstance()
       .insert({
